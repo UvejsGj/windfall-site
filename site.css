@@ -13,6 +13,7 @@
   --tint-leaf: #DCE9CF;
   --tint-russet: #F0E3C6;
   --tint-stem: #E3E7D8;
+  --film-still: url("media/phone-page-light.webp");  /* shown until the film is played */
 
   --display: "Bricolage Grotesque", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   --body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
@@ -26,6 +27,7 @@
     --flesh: #0F1511; --pith: #171F19; --seed: #E8EDDD; --stem: #9AA79A; --rule: #2B362D;
     --skin: #EF6A5F; --leaf: #8CC57C; --russet: #D9A85C;
     --tint-skin: #3B1F1C; --tint-leaf: #1D3220; --tint-russet: #352A10; --tint-stem: #212A23;
+    --film-still: url("media/phone-page-dark.webp");
     color-scheme: dark;
   }
 }
@@ -33,6 +35,7 @@
   --flesh: #0F1511; --pith: #171F19; --seed: #E8EDDD; --stem: #9AA79A; --rule: #2B362D;
   --skin: #EF6A5F; --leaf: #8CC57C; --russet: #D9A85C;
   --tint-skin: #3B1F1C; --tint-leaf: #1D3220; --tint-russet: #352A10; --tint-stem: #212A23;
+  --film-still: url("media/phone-page-dark.webp");
   color-scheme: dark;
 }
 
@@ -184,7 +187,74 @@ code { font-size: .88em; background: var(--tint-stem); padding: .1em .35em; bord
 .route h3 { margin: 0; font-size: 1.25rem; line-height: 1.15; }
 .route p { font-size: 15px; line-height: 1.5; color: var(--stem); }
 .route a { font-weight: 600; font-size: 15px; }
+.route .go { display: flex; flex-wrap: wrap; gap: 4px 18px; color: var(--seed); }
 @media (max-width: 860px) { .routes { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- the phone-page film ----------
+   The film sits in the content column. In the margin beside it hangs a second drop line,
+   built like the one in the opening, with a stop for each of the film's nine steps. The
+   apple rests on the step the film is showing. */
+.film { row-gap: 28px; grid-template-rows: auto auto 1fr; }   /* the line spans rows 2 and 3, and 1fr takes its overhang, so no gap opens under the film */
+.film > header { grid-area: 1 / 1; }
+.film > .body { grid-area: 1 / 2; }
+.film > .reel { grid-area: 2 / 2; }
+.film > .reel-wrap { grid-area: 2 / 1 / 4 / 2; align-self: start; }
+.film > .script { grid-area: 3 / 2; align-self: start; }
+
+.reel { margin: 0; display: grid; gap: 10px; min-width: 0; }
+.screen { overflow: hidden; border: 1px solid var(--rule); border-radius: 6px; background: var(--pith) var(--film-still) center / cover no-repeat; }
+.screen video { display: block; width: 100%; height: auto; }
+.screen video:focus-visible { outline-offset: -4px; }   /* the frame clips, so the ring goes inside */
+
+.reel-wrap { --apple: 36px; position: relative; padding-top: 46px; min-width: 0; }
+.reel-line { list-style: none; margin: 0; padding: 40px 0 0 52px; position: relative; display: grid; gap: 12px; }
+.reel-line::before { content: ""; position: absolute; left: 16px; top: 0; bottom: calc(var(--apple) / 2); border-left: 2px dashed var(--rule); }
+.reel-line li { position: relative; display: grid; gap: 2px; }
+.reel-line li[data-at]:not(.land)::before { content: ""; position: absolute; left: -42px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--flesh); border: 2px solid var(--seed); }
+.reel-line a, .reel-line button { display: grid; gap: 1px; justify-items: start; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
+.reel-line a::after, .reel-line button::after { content: ""; position: absolute; inset: -6px 0 -6px -52px; }   /* the dot and the line are part of the target */
+.reel-line .st { font: 500 15px/1.4 var(--mono); font-variant-numeric: tabular-nums; text-decoration: underline; text-decoration-color: var(--rule); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.reel-line .sd { font-size: 14.5px; line-height: 1.4; color: var(--stem); }
+.reel-line .hl { display: none; }
+.reel-line a:hover .st, .reel-line button:hover .st { text-decoration-color: var(--skin); }
+.reel-line a:hover .sd, .reel-line button:hover .sd { color: var(--seed); }
+.reel-line li.land { min-height: var(--apple); align-content: center; }
+.reel-line li.land .st, .reel-line li.land .sd { color: var(--skin); }
+.reel-line .apple { position: absolute; left: calc(17px - var(--apple) / 2); top: calc(100% - var(--apple)); width: var(--apple); height: var(--apple); pointer-events: none; }
+.reel-line .apple svg { display: block; width: 100%; height: 100%; }
+
+/* With the script the apple waits under the twig, and the line shows how far the film has come. */
+.reel-wrap.on .reel-line .apple { top: 0; }
+.reel-wrap.on .reel-line li:not(.past):not(.now):not(.land) .st { color: var(--stem); }
+.reel-line li.past::before { background: var(--seed); }
+.reel-line li.now::before { border-color: var(--skin); }
+.reel-line li.now .st, .reel-line li.now .sd { color: var(--skin); }
+
+/* the film in words, laid out like the log */
+.script { min-width: 0; }
+.script summary { width: max-content; padding-block: 4px; font: 500 12px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--skin); cursor: pointer; }
+.script[open] summary { margin-bottom: 10px; }
+.script > .small { margin-bottom: 14px; }
+.script ol { list-style: none; margin: 0; padding: 0; display: grid; border-bottom: 1px solid var(--rule); }
+.script li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 4px 20px; padding-block: 16px; border-top: 1px solid var(--rule); }
+.script time { font: 400 13.5px/1.6 var(--mono); color: var(--stem); font-variant-numeric: tabular-nums; }
+.script li > div { display: grid; gap: 6px; min-width: 0; }
+.script .eb { font: 500 11.5px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--skin); }
+.sec .script .hd { margin: 0; font-size: 1.15rem; line-height: 1.25; letter-spacing: -.01em; }
+.script .said { font-size: 15.5px; line-height: 1.5; }
+.script .seen { font-size: 14.5px; line-height: 1.5; color: var(--stem); }
+.script .seen b { margin-right: 8px; font: 500 11px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--seed); }
+.script code { overflow-wrap: anywhere; }
+
+@media (max-width: 860px) {
+  .film { grid-template-rows: none; }
+  .film > header, .film > .body, .film > .reel, .film > .reel-wrap, .film > .script { grid-area: auto; }
+  .reel-wrap { max-width: 420px; }
+  .reel-line { gap: 18px; }
+  .reel-line .hl { display: block; font-size: 15px; line-height: 1.45; color: var(--stem); }   /* the film's own captions are about 5px tall here */
+  .reel-line li.now .hl { color: var(--seed); }
+}
+@media (max-width: 620px) { .script li { grid-template-columns: minmax(0, 1fr); } }
 
 /* code */
 pre { margin: 0; padding: 20px 22px; background: var(--pith); border: 1px solid var(--rule); border-radius: 6px; overflow-x: auto; font-size: 14px; line-height: 1.75; }
@@ -224,6 +294,13 @@ footer nav { display: flex; flex-wrap: wrap; gap: 6px 22px; color: var(--seed); 
   /* The leaves on the twig move in the wind that dropped the apple. */
   .twig .lf { transform-box: fill-box; transform-origin: 0% 70%; animation: sway 3.4s ease-in-out infinite alternate; }
   .twig .lf + .lf { transform-origin: 0% 50%; animation-duration: 2.7s; animation-delay: -1.2s; }
+
+  /* The film's apple drops to the next stop with the opening's fall, and lands with its
+     bounce. The leaves on its twig move only while the film runs. */
+  .reel-wrap:not(.playing) .twig .lf { animation-play-state: paused; }
+  .reel-line .apple.falling { transition: transform .55s cubic-bezier(.55, .085, .68, .53); }
+  .reel-line .apple.landed svg { animation: settle .45s ease-out; }
+  .reel-line .st, .reel-line .sd, .reel-line li::before { transition: color .25s ease, background-color .25s ease, border-color .25s ease; }
 
   /* The phone sends a frame, hears nothing back, and sends it again, six more times. */
   .frames span { animation: resend 4.2s linear infinite backwards; animation-delay: calc(var(--i, 0) * .6s); }
@@ -343,4 +420,4 @@ footer nav { display: flex; flex-wrap: wrap; gap: 6px 22px; color: var(--seed); 
 }
 
 /* On paper nothing waits to be scrolled to. */
-@media print { .js [data-rise] { opacity: 1 !important; transform: none !important; } .index, .again { display: none; } .notes-grid { display: block; } }
+@media print { .js [data-rise] { opacity: 1 !important; transform: none !important; } .index, .again, .reel, .reel-wrap { display: none; } .notes-grid { display: block; } }

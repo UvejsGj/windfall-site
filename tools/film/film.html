@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Windfall phone page explainer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+<style>
+:root {
+  --flesh: #F3F5EA; --pith: #FAFBF5; --seed: #18211B; --stem: #59645B; --rule: #D3D9C6;
+  --skin: #BF2E2A; --leaf: #37722F; --russet: #8C5C1A;
+  --tint-skin: #F4DAD3; --tint-leaf: #DCE9CF; --tint-russet: #F0E3C6; --tint-stem: #E3E7D8;
+  --display: "Bricolage Grotesque", sans-serif;
+  --body: "Instrument Sans", sans-serif;
+  --mono: "IBM Plex Mono", monospace;
+  /* the phone page's own iOS palette */
+  --ios-bg: #f2f2f7; --ios-card: #fff; --ios-text: #1c1c1e; --ios-sec: #6c6c70; --ios-line: #e5e5ea;
+  --ios-accent: #0a84ff; --ios-ok: #248a3d; --ios-bad: #d70015;
+  --on-skin: #fff; --grain: #d3d9c640; --glow: #fff8; --shadow: #18211b80;
+  --bezel: #222b24; --stand-a: #2b352d; --stand-b: #3a463c; --wall-a: #e6ecd9; --wall-b: #cfd9c0;
+  --handset: #1b1f1c; --edge: transparent;
+  --ios-banner: #f2f2f7f0; --ios-banner-text: #1c1c1e; --ios-bar: #f9f9fbf2; --ios-bar-line: #d8d8dc; --ios-url: #e3e3e8;
+}
+/* The same film for a dark page: the site's dark tokens, and the phone page's own dark palette. */
+:root[data-theme="dark"] {
+  --flesh: #0F1511; --pith: #171F19; --seed: #E8EDDD; --stem: #9AA79A; --rule: #2B362D;
+  --skin: #EF6A5F; --leaf: #8CC57C; --russet: #D9A85C;
+  --tint-skin: #3B1F1C; --tint-leaf: #1D3220; --tint-russet: #352A10; --tint-stem: #212A23;
+  --ios-bg: #000; --ios-card: #1c1c1e; --ios-text: #f2f2f7; --ios-sec: #98989f; --ios-line: #38383a;
+  --ios-ok: #30d158; --ios-bad: #ff453a;
+  --on-skin: #0F1511; --grain: #2b362d55; --glow: #ffffff06; --shadow: #00000099;
+  --bezel: #2a352c; --stand-a: #222b24; --stand-b: #2a352c; --wall-a: #1b271e; --wall-b: #111a14;
+  --handset: #2a302b; --edge: #3a463c;
+  --ios-banner: #2c2c2ef0; --ios-banner-text: #f2f2f7; --ios-bar: #1c1c1ef2; --ios-bar-line: #38383a; --ios-url: #2c2c2e;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--flesh); color: var(--seed); font-family: var(--body); }
+.abs { position: absolute; }
+#frame { position: absolute; inset: 0; overflow: hidden; }
+
+/* paper grain: faint rules */
+#bg { position: absolute; inset: 0; background:
+  radial-gradient(1200px 700px at 78% 30%, var(--glow) 0, transparent 70%),
+  repeating-linear-gradient(0deg, transparent 0 59px, var(--grain) 59px 60px); }
+
+/* captions */
+.cap { position: absolute; left: 120px; top: 74px; width: 1680px; }
+.cap .eyebrow { font: 600 22px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--skin); }
+.cap h2 { margin: 14px 0 0; font: 700 60px/1.05 var(--display); font-variation-settings: "wdth" 85; letter-spacing: -.01em; }
+.cap p { margin: 14px 0 0; font: 400 28px/1.35 var(--body); color: var(--stem); max-width: 1500px; }
+.cap p b { color: var(--seed); font-weight: 600; }
+
+/* brand corner */
+#brand { right: 120px; top: 70px; display: flex; align-items: center; gap: 14px; font: 600 22px var(--display); color: var(--stem); }
+#brand svg { width: 34px; height: 34px; }
+
+/* PC */
+#pc { left: 170px; top: 330px; width: 900px; height: 640px; }
+#monitor { position: absolute; left: 0; top: 0; width: 900px; height: 540px; background: var(--bezel); border-radius: 22px; padding: 18px; box-shadow: 0 30px 60px -30px var(--shadow), inset 0 0 0 1px var(--edge); }
+#screen { position: relative; width: 864px; height: 504px; border-radius: 8px; overflow: hidden; background: linear-gradient(160deg, var(--wall-a), var(--wall-b)); }
+#neck { position: absolute; left: 400px; top: 540px; width: 100px; height: 70px; background: linear-gradient(var(--stand-a), var(--stand-b)); }
+#foot { position: absolute; left: 300px; top: 606px; width: 300px; height: 18px; border-radius: 9px; background: var(--stand-b); }
+#pc-label { position: absolute; left: 0; top: 648px; width: 900px; text-align: center; font: 500 22px var(--mono); color: var(--stem); }
+
+.win { position: absolute; left: 40px; top: 30px; width: 784px; height: 444px; background: var(--pith); border-radius: 12px; box-shadow: 0 12px 30px -12px var(--shadow); overflow: hidden; }
+.win .bar { height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid var(--rule); font: 700 20px var(--display); }
+.win .bar svg { width: 24px; height: 24px; }
+.win .bar .dots { margin-left: auto; color: var(--stem); font: 400 18px var(--body); letter-spacing: 6px; }
+.layer { position: absolute; left: 0; right: 0; top: 44px; bottom: 0; padding: 26px 30px; }
+.pc-h { font: 700 30px/1.1 var(--display); }
+.pc-p { font: 400 19px/1.4 var(--body); color: var(--stem); margin-top: 8px; }
+.btn { display: inline-block; padding: 11px 22px; border-radius: 10px; font: 600 19px var(--body); }
+.btn.red { background: var(--skin); color: var(--on-skin); }
+.btn.ghost { background: var(--tint-stem); color: var(--seed); }
+.rows { margin-top: 16px; }
+.rowi { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid var(--rule); font: 400 19px var(--body); }
+.rowi:first-child { border-top: 0; }
+.rowi .sz { color: var(--stem); font-family: var(--mono); font-size: 16px; }
+.mono { font-family: var(--mono); }
+.tick { color: var(--leaf); font-weight: 700; }
+
+/* phone */
+#phone { left: 1330px; top: 248px; width: 360px; height: 740px; background: var(--handset); border-radius: 58px; padding: 14px; box-shadow: 0 40px 70px -30px var(--shadow), inset 0 0 0 1px var(--edge); }
+#pscreen { position: relative; width: 332px; height: 712px; border-radius: 46px; overflow: hidden; background: var(--ios-bg); font-family: -apple-system, var(--body); color: var(--ios-text); }
+#island { position: absolute; left: 116px; top: 12px; width: 100px; height: 30px; border-radius: 15px; background: #000; z-index: 20; }
+#phone-label { position: absolute; left: 1330px; top: 1006px; width: 360px; text-align: center; font: 500 22px var(--mono); color: var(--stem); }
+.p-layer { position: absolute; inset: 0; }
+.lock { background: linear-gradient(170deg, #3f5a3c, #18211b); color: #fff; text-align: center; }
+.lock .time { margin-top: 110px; font: 300 84px/1 var(--body); }
+.lock .date { font: 500 18px var(--body); opacity: .8; margin-top: 6px; }
+.cam { background: #0d0f0e; }
+.cam .view { position: absolute; left: 0; right: 0; top: 0; bottom: 120px; background: radial-gradient(circle at 50% 45%, #4a5148, #1e231f 75%); }
+.cam .shot { position: absolute; left: 50%; bottom: 34px; width: 66px; height: 66px; margin-left: -33px; border-radius: 50%; border: 5px solid #fff; }
+.cam .qr-in { position: absolute; left: 76px; top: 200px; width: 180px; height: 180px; background: #fff; padding: 10px; border-radius: 6px; }
+.cam .bracket { position: absolute; left: 66px; top: 190px; width: 200px; height: 200px; border: 4px solid #ffd60a; border-radius: 14px; }
+.banner { position: absolute; left: 12px; right: 12px; top: 54px; background: var(--ios-banner); border-radius: 20px; padding: 12px 14px; color: var(--ios-banner-text); font: 400 14px/1.3 -apple-system, var(--body); }
+.banner b { display: block; font-size: 14px; }
+.safari { position: absolute; left: 0; right: 0; bottom: 0; height: 74px; background: var(--ios-bar); border-top: 1px solid var(--ios-bar-line); z-index: 10; }
+.safari .url { margin: 12px 16px; height: 38px; border-radius: 12px; background: var(--ios-url); display: flex; align-items: center; justify-content: center; font: 500 15px -apple-system, var(--body); color: var(--ios-text); }
+.pg { position: absolute; left: 0; right: 0; top: 0; padding: 58px 14px 90px; }
+.pg .eb { font: 600 11px var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--ios-sec); }
+.pg h1 { margin: 2px 0 4px; font: 700 27px/1.15 var(--body); }
+.pg .lede { font-size: 14px; color: var(--ios-sec); line-height: 1.35; }
+.pg .card { background: var(--ios-card); border-radius: 15px; padding: 14px; margin-top: 14px; }
+.pg h3 { margin: 0 0 11px; font: 700 17px var(--body); }
+.pg .ib { display: block; text-align: center; border-radius: 12px; padding: 12px; font: 600 15px var(--body); background: var(--ios-accent); color: #fff; }
+.pg .ib.dim { opacity: .45; }
+.pg .files { margin-top: 8px; }
+.pg .files div { display: flex; justify-content: space-between; padding: 7px 0; border-top: 1px solid var(--ios-line); font-size: 13.5px; }
+.pg .files div:first-child { border-top: 0; }
+.pg .files .s { color: var(--ios-sec); }
+.pg .files a { color: var(--ios-accent); }
+.pg .prog { height: 5px; border-radius: 3px; background: var(--ios-line); overflow: hidden; margin-top: 11px; }
+.pg .prog i { display: block; height: 100%; width: 0; background: var(--ios-accent); }
+.pg .st { margin-top: 10px; font-size: 13.5px; color: var(--ios-sec); min-height: 18px; }
+.pg .st.ok { color: var(--ios-ok); font-weight: 600; }
+.pg .st.bad { color: var(--ios-bad); }
+.pg .note { font-size: 12.5px; color: var(--ios-sec); margin-top: 8px; line-height: 1.35; }
+
+/* link */
+#link { left: 1070px; top: 570px; width: 260px; height: 40px; }
+#link .line { position: absolute; left: 0; right: 0; top: 19px; height: 3px; border-radius: 2px; background: var(--leaf); }
+#link .lbl { position: absolute; left: 0; right: 0; top: 34px; text-align: center; font: 500 17px var(--mono); color: var(--leaf); }
+#awdl { left: 1070px; top: 570px; width: 260px; height: 40px; }
+#awdl .line { position: absolute; left: 0; right: 0; top: 19px; border-top: 3px dashed var(--skin); }
+#awdl .lbl { position: absolute; left: 0; right: 0; top: -34px; text-align: center; font: 600 18px var(--mono); color: var(--skin); }
+#awdl .x { position: absolute; left: 106px; top: -6px; width: 48px; height: 48px; border-radius: 50%; background: var(--skin); color: var(--on-skin); font: 700 30px/48px var(--body); text-align: center; }
+#router { left: 1164px; top: 430px; width: 72px; }
+.chip { position: absolute; left: 0; top: 0; padding: 7px 12px; border-radius: 8px; font: 500 16px var(--mono); white-space: nowrap; background: var(--seed); color: var(--flesh); box-shadow: 0 6px 14px -6px var(--shadow); }
+.chip.red { background: var(--skin); }
+.chip.leaf { background: var(--leaf); }
+.byte { position: absolute; left: 0; top: 0; width: 16px; height: 16px; border-radius: 4px; background: var(--leaf); }
+.byte.red { background: var(--skin); }
+
+.cursor { position: absolute; left: 0; top: 0; width: 28px; z-index: 30; }
+.ripple { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; border: 4px solid var(--skin); z-index: 29; }
+
+/* full-screen scenes */
+.full { position: absolute; inset: 0; }
+#intro { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+#intro svg { width: 190px; height: 190px; }
+#intro h1 { margin: 26px 0 0; font: 800 132px/1 var(--display); font-variation-settings: "wdth" 85; letter-spacing: -.02em; }
+#intro .sub { margin-top: 20px; font: 500 40px var(--body); color: var(--stem); }
+#intro .tag { margin-top: 30px; font: 500 24px var(--mono); color: var(--skin); letter-spacing: .06em; text-transform: uppercase; }
+
+#flow { left: 120px; top: 330px; width: 1680px; }
+.req { display: grid; grid-template-columns: 330px 1fr; gap: 32px; align-items: center; padding: 26px 34px; background: var(--pith); border: 1px solid var(--rule); border-radius: 18px; margin-bottom: 20px; }
+.req .m { font: 500 28px var(--mono); }
+.req .m em { font-style: normal; color: var(--skin); }
+.req .d { font: 400 27px/1.35 var(--body); color: var(--stem); }
+.req .d b { color: var(--seed); font-weight: 600; }
+
+#binding { left: 120px; top: 340px; width: 1680px; display: grid; grid-template-columns: 1fr 120px 1fr; align-items: center; }
+.bcard { background: var(--pith); border: 2px solid var(--rule); border-radius: 22px; padding: 34px 38px; }
+.bcard .k { font: 600 20px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--stem); }
+.bcard .v { margin-top: 14px; font: 500 40px var(--mono); }
+.bcard .v2 { margin-top: 8px; font: 400 26px var(--mono); color: var(--stem); }
+.bcard.bad { border-color: var(--skin); background: var(--tint-skin); }
+.vs { text-align: center; font: 700 64px var(--display); color: var(--skin); }
+#verdict { left: 120px; top: 700px; width: 1680px; display: flex; gap: 22px; }
+.pill { padding: 18px 26px; border-radius: 14px; font: 500 25px var(--body); background: var(--tint-stem); }
+.pill.red { background: var(--skin); color: var(--on-skin); font-weight: 600; }
+
+#locks { left: 120px; top: 330px; width: 1680px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.lockc { background: var(--pith); border: 1px solid var(--rule); border-radius: 22px; padding: 36px 40px; min-height: 300px; }
+.lockc .n { font: 700 72px/1 var(--display); color: var(--skin); }
+.lockc h3 { margin: 10px 0 0; font: 700 40px var(--display); }
+.lockc p { margin: 12px 0 0; font: 400 26px/1.4 var(--body); color: var(--stem); }
+.lockc .tok { margin-top: 18px; font: 500 22px var(--mono); color: var(--seed); background: var(--tint-stem); padding: 10px 14px; border-radius: 8px; display: inline-block; }
+#http { left: 120px; top: 720px; width: 1680px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.hcol { padding: 24px 30px; border-radius: 16px; font: 400 24px/1.4 var(--body); }
+.hcol b { display: block; font: 600 20px var(--mono); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+.hcol.ok { background: var(--tint-leaf); } .hcol.ok b { color: var(--leaf); }
+.hcol.no { background: var(--tint-russet); } .hcol.no b { color: var(--russet); }
+
+#outro { left: 120px; top: 320px; width: 1680px; }
+.vrow { display: flex; align-items: baseline; gap: 22px; padding: 18px 0; border-top: 1px solid var(--rule); font: 400 32px/1.3 var(--body); }
+.vrow:first-child { border-top: 0; }
+.vrow .tick { font-size: 34px; }
+#outro-end { left: 120px; top: 830px; width: 1680px; display: flex; justify-content: space-between; align-items: center; }
+#outro-end .big { font: 700 44px var(--display); font-variation-settings: "wdth" 85; }
+#outro-end .url { font: 500 28px var(--mono); color: var(--skin); }
+</style>
+</head>
+<body>
+<div id="frame">
+<div id="bg"></div>
+
+<!-- shared mark -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="mark" viewBox="0 0 100 100">
+      <mask id="gusts" maskUnits="userSpaceOnUse" x="-100" y="-100" width="300" height="300">
+        <rect x="-100" y="-100" width="300" height="300" fill="#fff"/>
+        <path d="M-20 43H47M-20 60H35" fill="none" stroke="#000" stroke-width="8" stroke-linecap="round"/>
+      </mask>
+      <g mask="url(#gusts)"><path fill="var(--skin)" transform="translate(51 50) rotate(12) scale(0.9) translate(-50 -48)" d="M50 31C45 25 37 23 30 25C19 28 12 38 12 50C12 67 23 87 36 88C42 88.5 46 86 50 86C54 86 58 88.5 64 88C77 87 88 67 88 50C88 38 81 28 70 25C63 23 55 25 50 31Z"/></g>
+      <g fill="var(--leaf)" transform="translate(51 50) rotate(12) scale(0.9) translate(-50 -48)">
+        <rect x="48" y="12" width="7" height="22" rx="3.5" transform="rotate(14 51.5 30)"/>
+        <path d="M53 23C56 13 66 8 78 9C76 19 66 26 53 23Z"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ INTRO ============ -->
+<div id="intro" class="full">
+  <svg><use href="#mark"/></svg>
+  <h1>Windfall</h1>
+  <div class="sub">How the phone page gets files between an iPhone and Windows</div>
+  <div class="tag">Ordinary Wi-Fi · no app · no extra hardware</div>
+</div>
+
+<!-- ============ CAPTIONS ============ -->
+<div class="cap" id="c1"><div class="eyebrow">01 · The problem</div><h2>AirDrop needs a radio mode Windows can't drive.</h2>
+  <p>An iPhone only AirDrops over <b>AWDL</b>, Apple's second Wi-Fi link layer. Windows exposes no way to run it.</p></div>
+<div class="cap" id="c1b"><div class="eyebrow">01 · The way round</div><h2>So use the Wi-Fi both devices already share.</h2>
+  <p>Windfall serves a small web page on the local network. <b>It is not AirDrop</b>, and it needs no Linux, no app on the phone and no extra hardware.</p></div>
+<div class="cap" id="c2"><div class="eyebrow">02 · Scan</div><h2>The PC shows a code. The iPhone's camera reads it.</h2>
+  <p>The code holds the PC's address and a <b>secret token</b>: 128 random bits, new every run. Safari opens the page. Any request without the token gets a 404.</p></div>
+<div class="cap" id="c3"><div class="eyebrow">03 · Send, in order</div><h2>The phone sends the list first, then the files.</h2>
+  <p>One <span class="mono">POST /&lt;token&gt;/upload</span>. The form fields arrive in a fixed order, and the order is the point.</p></div>
+<div class="cap" id="c4"><div class="eyebrow">04 · Ask before reading</div><h2>The PC asks before it reads a single byte of a file.</h2>
+  <p>The list is what the person sees. Until they answer, the upload waits in the socket and <b>TCP holds the phone back</b>, so nobody can push a file onto the PC unasked.</p></div>
+<div class="cap" id="c5"><div class="eyebrow">04 · Accepted</div><h2>Accept, and the bytes flow at Wi-Fi speed.</h2>
+  <p>Files are staged, then committed <b>all or nothing</b>. Five photos, 3.6 MB together, arrived intact from a real iPhone.</p></div>
+<div class="cap" id="c6"><div class="eyebrow">05 · The list is binding</div><h2>What was agreed to is what lands on disk.</h2>
+  <p>Each file is saved under the name the list gave it and may be no larger than the list said. Any mismatch fails the whole upload.</p></div>
+<div class="cap" id="c7"><div class="eyebrow">06 · Decline</div><h2>Say no, and the phone hears it.</h2>
+  <p>The refusal goes out while the phone is still uploading. Safari shows <b>"Declined on"</b> the PC's name, and nothing is left behind: no file, no staging folder.</p></div>
+<div class="cap" id="c8"><div class="eyebrow">07 · The other way</div><h2>The PC can offer files back to the phone.</h2>
+  <p>Only while the phone sheet is open. Each offer has a generation number, so an old link stops working the moment the offer changes. Downloads land in the Files app.</p></div>
+<div class="cap" id="c9"><div class="eyebrow">08 · Security model</div><h2>Two locks, and plain HTTP on purpose.</h2>
+  <p>Safari shows a full-page warning for a self-signed certificate. Rather than teach people to click through it, the page relies on the token, the prompt and the Wi-Fi's own encryption.</p></div>
+<div class="cap" id="c10"><div class="eyebrow">09 · Verified</div><h2>Tested with a real iPhone on iOS 27.0.1.</h2>
+  <p>The Windfall app on plain Windows, over home Wi-Fi.</p></div>
+
+<!-- ============ STAGE ============ -->
+<div id="stage" class="full">
+  <div id="pc" class="abs">
+    <div id="monitor"><div id="screen">
+      <div class="win">
+        <div class="bar"><svg><use href="#mark"/></svg>Windfall<span class="dots">● ● ●</span></div>
+
+        <div class="layer" id="pc-home">
+          <div class="pc-h">Ready</div>
+          <div class="pc-p">iPhones only appear here over AWDL. For one on this Wi-Fi, use the phone button above.</div>
+          <div style="margin-top:40px;display:flex;gap:16px;align-items:center"><span class="btn red" id="phone-btn">📱 Your phone</span><span class="pc-p" style="margin:0">Scan a code, send both ways</span></div>
+        </div>
+
+        <div class="layer" id="pc-qr">
+          <div style="display:flex;gap:34px">
+            <div id="qr" style="width:250px;height:250px;background:#fff;border:1px solid var(--rule);border-radius:10px;padding:14px;flex:none"></div>
+            <div>
+              <div class="pc-h">Your phone</div>
+              <div class="pc-p">Scan with the Camera on a phone on this Wi-Fi, then send files both ways in its browser. No app needed.</div>
+              <div class="mono" style="margin-top:18px;font-size:17px;line-height:1.5;color:var(--seed)">http://192.168.1.20:52814/<br><span id="tok" style="background:var(--tint-skin);color:var(--skin);padding:1px 6px;border-radius:4px">k3J9…Qf2w</span>/</div>
+              <div style="margin-top:20px"><span class="btn ghost">New link</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer" id="pc-ask">
+          <div class="pc-h">iPhone wants to send 5 files</div>
+          <div class="pc-p">3.6 MB together. Nothing is saved unless you accept.</div>
+          <div class="rows">
+            <div class="rowi"><span>IMG_4101.jpeg</span><span class="sz">2.5 MB</span></div>
+            <div class="rowi"><span>IMG_4102.jpeg</span><span class="sz">412 KB</span></div>
+            <div class="rowi"><span>IMG_4103.jpeg</span><span class="sz">388 KB</span></div>
+            <div class="rowi"><span>IMG_4104.jpeg</span><span class="sz">201 KB</span></div>
+            <div class="rowi"><span>IMG_4105.jpeg</span><span class="sz">96 KB</span></div>
+          </div>
+          <div style="position:absolute;right:30px;bottom:24px;display:flex;gap:14px"><span class="btn ghost" id="b-decline">Decline</span><span class="btn red" id="b-accept">Accept</span></div>
+        </div>
+
+        <div class="layer" id="pc-saved">
+          <div class="pc-h" id="saved-h">Receiving from iPhone…</div>
+          <div class="pc-p mono" style="font-size:17px">Downloads\Windfall</div>
+          <div class="rows" id="saved-rows">
+            <div class="rowi"><span>IMG_4101.jpeg</span><span class="tick">✓</span></div>
+            <div class="rowi"><span>IMG_4102.jpeg</span><span class="tick">✓</span></div>
+            <div class="rowi"><span>IMG_4103.jpeg</span><span class="tick">✓</span></div>
+            <div class="rowi"><span>IMG_4104.jpeg</span><span class="tick">✓</span></div>
+            <div class="rowi"><span>IMG_4105.jpeg</span><span class="tick">✓</span></div>
+          </div>
+        </div>
+
+        <div class="layer" id="pc-ask2">
+          <div class="pc-h">iPhone wants to send 1 file</div>
+          <div class="pc-p">Nothing is saved unless you accept.</div>
+          <div class="rows"><div class="rowi"><span>IMG_4120.jpeg</span><span class="sz">1.6 MB</span></div></div>
+          <div style="position:absolute;right:30px;bottom:24px;display:flex;gap:14px"><span class="btn ghost" id="b-decline2">Decline</span><span class="btn red">Accept</span></div>
+        </div>
+
+        <div class="layer" id="pc-declined">
+          <div class="pc-h">Declined</div>
+          <div class="pc-p">The phone was told. Nothing was written: no file, no staging folder.</div>
+          <div style="margin-top:34px;padding:18px 22px;border-radius:12px;background:var(--tint-stem);font:500 18px var(--mono);color:var(--stem)">Downloads\Windfall\.incoming-…&nbsp;&nbsp;<span style="color:var(--skin)">removed</span></div>
+        </div>
+
+        <div class="layer" id="pc-offer">
+          <div class="pc-h">Offered to the phone</div>
+          <div class="pc-p">While this sheet is open · offer <span class="mono" style="color:var(--skin)">#4</span></div>
+          <div class="rows">
+            <div class="rowi"><span>holiday-01.jpg</span><span class="sz">3.1 MB</span></div>
+            <div class="rowi"><span>holiday-02.jpg</span><span class="sz">2.8 MB</span></div>
+            <div class="rowi"><span>clip.mp4</span><span class="sz">24 MB</span></div>
+          </div>
+        </div>
+      </div>
+      <svg class="cursor" id="cursor" viewBox="0 0 28 40"><path d="M2 2L2 32L10 25L15 37L20 35L15 23L26 23Z" fill="#18211B" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <div class="ripple" id="ripple-pc"></div>
+    </div></div>
+    <div id="neck"></div><div id="foot"></div>
+    <div id="pc-label">Windows PC · STUDIO-PC</div>
+  </div>
+
+  <div id="awdl" class="abs"><div class="lbl">AirDrop · AWDL</div><div class="line"></div><div class="x">✕</div></div>
+  <div id="link" class="abs"><div class="line"></div><div class="lbl">same Wi-Fi</div></div>
+  <svg id="router" class="abs" viewBox="0 0 72 60"><g fill="none" stroke="var(--leaf)" stroke-width="5" stroke-linecap="round"><path d="M8 22a40 40 0 0 1 56 0"/><path d="M18 32a26 26 0 0 1 36 0"/><path d="M28 42a12 12 0 0 1 16 0"/></g><circle cx="36" cy="52" r="5" fill="var(--leaf)"/></svg>
+
+  <div id="phone" class="abs"><div id="pscreen">
+    <div id="island"></div>
+    <div class="p-layer lock" id="p-lock"><div class="time">9:41</div><div class="date">Thursday 8 October</div></div>
+    <div class="p-layer cam" id="p-cam">
+      <div class="view"></div>
+      <div class="qr-in" id="qr2"></div>
+      <div class="bracket" id="bracket"></div>
+      <div class="shot"></div>
+      <div class="banner" id="banner"><b>Website QR Code</b>Open “192.168.1.20” in Safari</div>
+    </div>
+    <div class="p-layer" id="p-page">
+      <div class="pg" id="pg">
+        <div class="eb">Windfall</div>
+        <h1>STUDIO-PC</h1>
+        <div class="lede">Send files both ways over this Wi-Fi. No app needed.</div>
+        <div class="card" id="sendcard">
+          <h3>Send to STUDIO-PC</h3>
+          <div class="ib" id="choose">Choose photos or files</div>
+          <div class="files" id="chosen5">
+            <div><span>IMG_4101.jpeg</span><span class="s">2.5 MB</span></div>
+            <div><span>IMG_4102.jpeg</span><span class="s">412 KB</span></div>
+            <div><span>IMG_4103.jpeg</span><span class="s">388 KB</span></div>
+            <div><span>IMG_4104.jpeg</span><span class="s">201 KB</span></div>
+            <div><span>IMG_4105.jpeg</span><span class="s">96 KB</span></div>
+          </div>
+          <div class="files" id="chosen1"><div><span>IMG_4120.jpeg</span><span class="s">1.6 MB</span></div></div>
+          <div class="ib" id="sendbtn" style="margin-top:10px">Send 5 files</div>
+          <div class="prog" id="prog"><i id="progbar"></i></div>
+          <div class="st" id="st"></div>
+        </div>
+        <div class="card" id="recv">
+          <h3>From STUDIO-PC</h3>
+          <div class="files">
+            <div><a>holiday-01.jpg</a><span class="s" id="d1">3.1 MB</span></div>
+            <div><a>holiday-02.jpg</a><span class="s" id="d2">2.8 MB</span></div>
+            <div><a>clip.mp4</a><span class="s" id="d3">24 MB</span></div>
+          </div>
+          <div class="note">Downloads go to the Files app. To put a photo in Photos, open it there and tap Share, then Save Image.</div>
+        </div>
+      </div>
+      <div class="safari"><div class="url">🔒︎ 192.168.1.20</div></div>
+      <div class="banner" id="dl-banner" style="top:54px"><b>Download complete</b>holiday-01.jpg saved to Files</div>
+    </div>
+    <div class="ripple" id="ripple-ph"></div>
+  </div></div>
+  <div id="phone-label">iPhone · Safari</div>
+
+  <!-- packets -->
+  <div id="packets" class="full" style="pointer-events:none"></div>
+</div>
+
+<!-- ============ FLOW (upload order) ============ -->
+<div id="flow" class="abs">
+  <div class="req" id="f1"><div class="m">1 · <em>from</em></div><div class="d">A guess at the device, <b>"iPhone"</b>, from the browser. Display only.</div></div>
+  <div class="req" id="f2"><div class="m">2 · <em>manifest</em></div><div class="d">JSON list of <b>{name, size}</b> for every file it is about to send. <b>No list, no question:</b> an upload without one is refused.</div></div>
+  <div class="req" id="f3"><div class="m">3 · <em>file</em> × n</div><div class="d">The files themselves. The PC reads the first one's headers, then <b>stops and asks</b>.</div></div>
+</div>
+
+<!-- ============ BINDING ============ -->
+<div id="binding" class="abs">
+  <div class="bcard" id="bc1"><div class="k">Agreed at the prompt</div><div class="v">photo.jpg</div><div class="v2">1.2 MB · 1 file</div></div>
+  <div class="vs" id="bvs">≠</div>
+  <div class="bcard bad" id="bc2"><div class="k">What the page sent</div><div class="v">photo.exe</div><div class="v2">40 MB · 2 files</div></div>
+</div>
+<div id="verdict" class="abs">
+  <div class="pill" id="v1">Name taken from the list</div>
+  <div class="pill" id="v2">No larger than listed</div>
+  <div class="pill" id="v3">Count must match</div>
+  <div class="pill red" id="v4">Mismatch → whole upload fails, nothing kept</div>
+</div>
+
+<!-- ============ LOCKS ============ -->
+<div id="locks" class="abs">
+  <div class="lockc" id="l1"><div class="n">1</div><h3>The token</h3><p>128 random bits as the first path segment, compared in constant time. Wrong or missing gets the same 404 as a page that doesn't exist.</p><div class="tok">/k3J9…Qf2w/upload</div></div>
+  <div class="lockc" id="l2"><div class="n">2</div><h3>The prompt</h3><p>Anyone with the link can <i>ask</i> to send files. Nothing is written until the person at the PC agrees. New link takes the address back.</p></div>
+</div>
+<div id="http" class="abs">
+  <div class="hcol ok" id="h1"><b>Protected</b>From outsiders, by the Wi-Fi's encryption. From others on the network without the link, by the token.</div>
+  <div class="hcol no" id="h2"><b>Not protected</b>From someone on the same network who can intercept traffic. So: home and other trusted networks.</div>
+</div>
+
+<!-- ============ OUTRO ============ -->
+<div id="outro" class="abs">
+  <div class="vrow" id="o1"><span class="tick">✓</span>The camera read the code from the app; Safari opened the page</div>
+  <div class="vrow" id="o2"><span class="tick">✓</span>One photo, then five in one send, arrived intact (Safari converts HEIC to JPEG)</div>
+  <div class="vrow" id="o3"><span class="tick">✓</span>A decline reached the phone as "Declined on", leaving nothing behind</div>
+  <div class="vrow" id="o4"><span class="tick">✓</span>Five images and a video downloaded from the PC to the phone</div>
+</div>
+<div id="outro-end" class="abs">
+  <div style="display:flex;align-items:center;gap:20px"><svg style="width:64px;height:64px"><use href="#mark"/></svg><span class="big">Not AirDrop. Just the Wi-Fi you already have.</span></div>
+  <div class="url">uvejsgj.github.io/windfall-site</div>
+</div>
+
+<div id="brand" class="abs"><svg><use href="#mark"/></svg>Windfall · the phone page</div>
+</div>
+
+<script>
+if (new URLSearchParams(location.search).get('theme') === 'dark') document.documentElement.dataset.theme = 'dark';
+
+// ---------- QR-looking pattern (illustrative) ----------
+function drawQR(el, n) {
+  let s = 1234567;
+  const rnd = () => (s = (s * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const finder = (x, y) => [x, y];
+  const isFinder = (x, y) => [[0,0],[n-7,0],[0,n-7]].some(([fx,fy]) => x>=fx-1 && x<fx+8 && y>=fy-1 && y<fy+8);
+  let r = '';
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    if (isFinder(x, y)) continue;
+    if (rnd() < 0.5) r += `<rect x="${x}" y="${y}" width="1.02" height="1.02"/>`;
+  }
+  for (const [fx, fy] of [[0,0],[n-7,0],[0,n-7]]) {
+    r += `<rect x="${fx}" y="${fy}" width="7" height="7"/><rect x="${fx+1}" y="${fy+1}" width="5" height="5" fill="#fff"/><rect x="${fx+2}" y="${fy+2}" width="3" height="3"/>`;
+  }
+  el.innerHTML = `<svg viewBox="0 0 ${n} ${n}" width="100%" height="100%" fill="#18211B" shape-rendering="crispEdges">${r}</svg>`;
+}
+drawQR(document.getElementById('qr'), 29);
+drawQR(document.getElementById('qr2'), 29);
+
+// ---------- timing helpers ----------
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const ease = (p) => p < .5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3) / 2;
+const outBack = (p) => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3*Math.pow(p-1,3) + c1*Math.pow(p-1,2); };
+const prog = (t, a, b) => ease(clamp((t - a) / (b - a)));
+const lerp = (a, b, p) => a + (b - a) * p;
+
+// visible in [a, b] with fades; dy = rise distance
+function vis(el, t, a, b, f = .45, dy = 24) {
+  if (typeof el === 'string') el = $(el);
+  const pin = prog(t, a, a + f), pout = b === Infinity ? 0 : prog(t, b - f, b);
+  const o = Math.min(pin, 1 - pout);
+  el.style.opacity = o;
+  el.style.visibility = o <= 0.001 ? 'hidden' : 'visible';
+  el.style.transform = `translateY(${(1 - pin) * dy - pout * dy * .5}px)`;
+  return o;
+}
+function op(el, o) { if (typeof el === 'string') el = $(el); el.style.opacity = o; el.style.visibility = o <= .001 ? 'hidden' : 'visible'; }
+
+// ---------- packets ----------
+const pk = $('packets');
+const pool = [];
+function chipAt(i, text, cls, x, y, o) {
+  let el = pool[i];
+  if (!el) { el = document.createElement('div'); pk.appendChild(el); pool[i] = el; }
+  el.className = cls; el.textContent = text;
+  el.style.transform = `translate(${x}px, ${y}px)`; el.style.opacity = o;
+  el.style.visibility = o <= .001 ? 'hidden' : 'visible';
+}
+// a packet flying along the link; dir +1 PC->phone, -1 phone->PC
+const LX0 = 1040, LX1 = 1350, LY = 589;
+function fly(i, text, cls, t, t0, dur, dir, yOff = 0, w = 0) {
+  const p = clamp((t - t0) / dur);
+  const e = ease(p);
+  const xa = dir > 0 ? LX0 : LX1 - w, xb = dir > 0 ? LX1 - w : LX0;
+  const o = p <= 0 || p >= 1 ? 0 : Math.min(1, p * 6, (1 - p) * 6);
+  chipAt(i, text, cls, lerp(xa, xb, e), LY + yOff - (text ? 16 : 8) - Math.sin(e * Math.PI) * 22, o);
+}
+
+// cursor & ripples (PC coordinates are inside #screen)
+function cursorPath(t, keys) {
+  // keys: [[t, x, y], ...]
+  if (t <= keys[0][0]) return keys[0];
+  for (let k = 1; k < keys.length; k++) if (t <= keys[k][0]) {
+    const [ta, xa, ya] = keys[k-1], [tb, xb, yb] = keys[k];
+    const p = ease((t - ta) / (tb - ta));
+    return [t, lerp(xa, xb, p), lerp(ya, yb, p)];
+  }
+  return keys[keys.length - 1];
+}
+function ripple(el, t, t0, x, y) {
+  el = $(el);
+  const p = clamp((t - t0) / .55);
+  el.style.left = x + 'px'; el.style.top = y + 'px';
+  el.style.opacity = p > 0 && p < 1 ? 1 - p : 0;
+  el.style.transform = `scale(${.4 + p * 1.1})`;
+}
+
+// ---------- timeline ----------
+const T = {
+  intro: [0, 6],
+  c1: [6, 11.5], c1b: [11.5, 16],
+  c2: [16, 27.5],
+  c3: [27.5, 36], flow: [27.5, 36],
+  c4: [36, 44.5], c5: [44.5, 52],
+  c6: [52, 61], c7: [61, 69.5], c8: [69.5, 80],
+  c9: [80, 91], c10: [91, 101],
+  END: 101,
+};
+window.DURATION = T.END + 2.4;
+
+function render(rt) {
+  // hold the upload-order slide for a beat so it can be read
+  const HOLD_AT = 34.6, HOLD = 2.4;
+  const t = rt < HOLD_AT ? rt : rt < HOLD_AT + HOLD ? HOLD_AT : rt - HOLD;
+  // intro
+  const io = vis('intro', t, -1, T.intro[1], .7, 0);
+  $('intro').style.transform = `scale(${lerp(.96, 1, prog(t, 0, 1.4))})`;
+  $('intro').querySelector('svg').style.transform = `translateY(${(1 - outBack(clamp(t / 1.2))) * -120}px) rotate(${(1 - outBack(clamp(t / 1.2))) * -25}deg)`;
+  op($('intro').querySelector('svg'), clamp(t / .4));
+
+  for (const c of ['c1','c1b','c2','c3','c4','c5','c6','c7','c8','c9','c10']) vis(c, t, T[c][0], T[c][1], .5, 26);
+  vis('brand', t, 6, T.END - .2, .6, 0);
+
+  // stage: visible during c1..c8 except overlays c3 (flow) and c6 (binding)
+  const stageO = Math.min(prog(t, 6, 6.8), 1 - prog(t, 79.4, 80))
+    * (1 - Math.min(prog(t, 30.8, 31.4), 1 - prog(t, 35.4, 36)))
+    * (1 - Math.min(prog(t, 52, 52.6), 1 - prog(t, 60.4, 61)));
+  op('stage', stageO);
+  $('pc').style.transform = `translateX(${(1 - prog(t, 6, 7.2)) * -80}px)`;
+  $('phone').style.transform = `translateX(${(1 - prog(t, 6.2, 7.4)) * 80}px)`;
+
+  // link: AWDL fails, then Wi-Fi
+  vis('awdl', t, 7.6, 12, .5, 0);
+  $('awdl').querySelector('.x').style.transform = `scale(${outBack(clamp((t - 9) / .5))})`;
+  $('awdl').querySelector('.line').style.clipPath = `inset(0 ${100 - prog(t, 7.6, 8.8) * 100}% 0 0)`;
+  vis('link', t, 12.4, Infinity, .5, 0);
+  $('link').querySelector('.line').style.transform = `scaleX(${prog(t, 12.4, 13.4)})`;
+  vis('router', t, 13, Infinity, .5, 14);
+
+  // ---- PC screen layers ----
+  vis('pc-home', t, 6, 17, .35, 10);
+  const btnPulse = t > 14.5 && t < 17 ? 1 + .06 * Math.sin((t - 14.5) * 8) : 1;
+  $('phone-btn').style.transform = `scale(${btnPulse})`;
+  vis('pc-qr', t, 17, 38.6, .35, 10);
+  vis('pc-ask', t, 38.6, 41.3, .3, 10);
+  vis('pc-saved', t, 41.3, 61.6, .3, 10);
+  vis('pc-ask2', t, 61.6, 64.3, .3, 10);
+  vis('pc-declined', t, 64.3, 69.8, .3, 10);
+  vis('pc-offer', t, 69.8, Infinity, .3, 10);
+  // token highlight pulse
+  $('tok').style.boxShadow = t > 19 && t < 24 ? `0 0 0 ${3 + 3 * Math.sin((t - 19) * 5)}px color-mix(in srgb, var(--skin) 22%, transparent)` : 'none';
+
+  // saved rows tick in
+  const rows = $('saved-rows').children;
+  for (let i = 0; i < 5; i++) {
+    const done = 41.6 + (i + 1) * .9;
+    rows[i].querySelector('.tick').style.opacity = t >= done ? 1 : 0;
+    rows[i].style.opacity = t >= 41.6 + i * .9 ? 1 : .35;
+  }
+  $('saved-h').textContent = t < 46.2 ? 'Receiving from iPhone…' : 'Saved 5 files from iPhone';
+
+  // PC cursor: to phone button, to Accept, to Decline
+  const cur = cursorPath(t, [
+    [13.4, 520, 420], [14.6, 140, 162], [15.4, 140, 162],
+    [38.8, 600, 470], [40.4, 760, 456], [43, 760, 456],
+    [62, 600, 470], [63.4, 640, 456], [70, 640, 456], [71, 700, 520],
+  ]);
+  $('cursor').style.transform = `translate(${cur[1]}px, ${cur[2]}px)`;
+  op('cursor', Math.min(prog(t, 13.4, 13.8), 1 - prog(t, 16.4, 16.8)) + Math.min(prog(t, 38.8, 39.2), 1 - prog(t, 42, 42.4)) + Math.min(prog(t, 62, 62.4), 1 - prog(t, 65, 65.4)));
+  $('ripple-pc').style.opacity = 0;
+  if (t > 15.4 && t < 16.2) ripple('ripple-pc', t, 15.4, 150, 172);
+  if (t > 40.8 && t < 41.6) ripple('ripple-pc', t, 40.8, 770, 466);
+  if (t > 63.6 && t < 64.4) ripple('ripple-pc', t, 63.6, 650, 466);
+  $('b-accept').style.transform = t > 40.8 && t < 41.1 ? 'scale(.94)' : 'none';
+  $('b-decline2').style.transform = t > 63.6 && t < 63.9 ? 'scale(.94)' : 'none';
+
+  // ---- phone layers ----
+  vis('p-lock', t, 6, 18, .4, 0);
+  vis('p-cam', t, 17.6, 24.2, .4, 0);
+  const scan = prog(t, 18.4, 19.8);
+  $('bracket').style.opacity = scan > 0 ? 1 : 0;
+  $('bracket').style.transform = `scale(${lerp(1.5, 1, scan)})`;
+  vis('banner', t, 20.6, 24.2, .35, -30);
+  vis('p-page', t, 24, Infinity, .45, 0);
+  // banner tap
+  $('ripple-ph').style.opacity = 0;
+  if (t > 22.6 && t < 23.4) ripple('ripple-ph', t, 22.6, 166, 84);
+
+  // page states
+  const pg = $('pg');
+  $('sendcard').style.display = t < 69.8 ? 'block' : 'none';
+  op('chosen5', t >= 28.6 && t < 49.5 ? Math.min(prog(t, 28.6, 29), 1 - prog(t, 49, 49.5)) : 0);
+  $('chosen5').style.display = t < 49.5 ? 'block' : 'none';
+  op('chosen1', t >= 61 && t < 69.8 ? 1 : 0);
+  $('chosen1').style.display = t >= 49.5 && t < 69.8 ? 'block' : 'none';
+  $('chosen1').style.visibility = t >= 61 && t < 69.8 ? 'visible' : 'hidden';
+  const sendO = (t >= 28.9 && t < 49.5) || (t >= 61.1 && t < 69.8);
+  op('sendbtn', sendO ? 1 : 0); $('sendbtn').style.display = sendO ? 'block' : 'none';
+  $('sendbtn').textContent = t < 55 ? 'Send 5 files' : 'Send 1 file';
+  const sending = (t >= 30 && t < 46.2) || (t >= 61.6 && t < 64.3);
+  $('sendbtn').classList.toggle('dim', sending);
+  $('choose').classList.toggle('dim', sending);
+  $('prog').style.display = (t >= 30 && t < 49.5) || (t >= 61.6 && t < 69.8) ? 'block' : 'none';
+  let bar = 0;
+  if (t >= 30 && t < 41) bar = lerp(0, 3, prog(t, 30, 32));
+  else if (t >= 41 && t < 49.5) bar = lerp(3, 100, clamp((t - 41.4) / 4.8));
+  else if (t >= 61.6) bar = lerp(0, 2, prog(t, 61.6, 62.6));
+  $('progbar').style.width = bar + '%';
+  const st = $('st');
+  st.className = 'st';
+  if (t >= 30 && t < 41.4) st.textContent = 'Waiting for STUDIO-PC to accept…';
+  else if (t >= 41.4 && t < 46.2) st.textContent = `Sending… ${Math.round(bar)}%`;
+  else if (t >= 46.2 && t < 61) { st.textContent = 'Sent 5 files.'; st.className = 'st ok'; }
+  else if (t >= 61.6 && t < 64.6) st.textContent = 'Waiting for STUDIO-PC to accept…';
+  else if (t >= 64.6 && t < 69.8) { st.textContent = 'Declined on STUDIO-PC.'; st.className = 'st bad'; }
+  else st.textContent = '';
+  st.style.transform = (t >= 64.6 && t < 65.2) ? `translateX(${Math.sin((t - 64.6) * 50) * 4}px)` : 'none';
+  vis('recv', t, 69.8, Infinity, .5, 20);
+  // taps on phone
+  if (t > 28.0 && t < 28.8) ripple('ripple-ph', t, 28.0, 166, 222);
+  if (t > 29.6 && t < 30.4) ripple('ripple-ph', t, 29.6, 166, 452);
+  if (t > 60.4 && t < 61.2) ripple('ripple-ph', t, 60.4, 166, 222);
+  if (t > 61.2 && t < 62) ripple('ripple-ph', t, 61.2, 166, 330);
+  if (t > 72.6 && t < 73.4) ripple('ripple-ph', t, 72.6, 90, 221);
+  // download progress
+  const dl = clamp((t - 73.4) / 3);
+  $('d1').textContent = t < 73.4 ? '3.1 MB' : dl < 1 ? `${Math.round(dl * 100)}%` : '✓ Files';
+  $('d1').style.color = dl >= 1 ? 'var(--ios-ok)' : '';
+  vis('dl-banner', t, 76.6, 79.6, .35, -30);
+
+  // ---- packets ----
+  let n = 0;
+  // the problem: a beacon tries and fails
+  // a beacon from the phone dies at the cross
+  for (let k = 0; k < 4; k++) {
+    const p = clamp((t - (8.4 + k * .7)) / .8);
+    chipAt(n++, '', 'byte red', lerp(LX1 - 16, 1210, ease(p)), LY - 8, p > 0 && p < 1 ? Math.min(1, (1 - p) * 3) : 0);
+  }
+  // ok wi-fi pings
+  fly(n++, '', 'byte', t, 13.6, .9, 1, 0, 12); fly(n++, '', 'byte', t, 14.1, .9, -1, 0, 12);
+  // page load: GET /<token>/
+  fly(n++, 'GET /k3J9…/', 'chip', t, 23.2, 1.1, -1, 0, 150);
+  fly(n++, 'page.html', 'chip leaf', t, 23.6, 1.1, 1, 0, 120);
+  // upload fields (during c4 when stage is back)
+  fly(n++, 'from: iPhone', 'chip', t, 36.4, 1.2, -1, -36, 150);
+  fly(n++, 'manifest: 5 files', 'chip', t, 36.9, 1.2, -1, 0, 200);
+  fly(n++, 'file 1 headers', 'chip red', t, 37.4, 1.2, -1, 36, 170);
+  // held back: a waiting chip hovering at phone edge
+  const hold = (t > 38.6 && t < 41.2) ? 1 : 0;
+  chipAt(n++, 'held by TCP ⏸', 'chip red', LX1 - 175 + Math.sin(t * 6) * 2, LY + 60, hold * Math.min(1, (t - 38.6) * 3));
+  // stream of bytes after accept
+  for (let k = 0; k < 26; k++) fly(n++, '', 'byte', t, 41.4 + k * .18, .9, -1, ((k * 37) % 5 - 2) * 10, 16);
+  fly(n++, '200 OK', 'chip leaf', t, 46.2, 1, 1, 0, 90);
+  // decline round
+  fly(n++, 'manifest: 1 file', 'chip', t, 61.4, 1, -1, 0, 190);
+  fly(n++, '403 Declined', 'chip red', t, 63.9, 1, 1, 0, 150);
+  // downloads
+  fly(n++, 'GET /files/4/0', 'chip', t, 72.9, 1.1, -1, 0, 180);
+  for (let k = 0; k < 16; k++) fly(n++, '', 'byte', t, 73.6 + k * .17, .8, 1, ((k * 23) % 5 - 2) * 10, 16);
+  fly(n++, 'GET /files/3/0 → 404', 'chip red', t, 77.4, 1.4, -1, 44, 240);
+
+  // ---- flow overlay ----
+  vis('flow', t, 31.2, 35.6, .5, 0);
+  vis('f1', t, 31.4, 35.6, .5, 30);
+  vis('f2', t, 32.3, 35.6, .5, 30);
+  vis('f3', t, 33.4, 35.6, .5, 30);
+
+  // ---- binding overlay ----
+  vis('binding', t, 52.4, 60.6, .5, 0);
+  vis('bc1', t, 52.8, 60.6, .5, 30);
+  vis('bvs', t, 54, 60.6, .4, 0);
+  $('bvs').style.transform = `scale(${outBack(clamp((t - 54) / .5))})`;
+  vis('bc2', t, 54.4, 60.6, .5, 30);
+  vis('verdict', t, 55.4, 60.6, .4, 0);
+  vis('v1', t, 55.6, 60.6, .4, 20); vis('v2', t, 56.2, 60.6, .4, 20); vis('v3', t, 56.8, 60.6, .4, 20); vis('v4', t, 57.8, 60.6, .4, 20);
+
+  // ---- locks ----
+  vis('locks', t, 80.2, 90.6, .5, 0);
+  vis('l1', t, 80.6, 90.6, .5, 30); vis('l2', t, 82.2, 90.6, .5, 30);
+  vis('http', t, 84.4, 90.6, .5, 0);
+  vis('h1', t, 84.6, 90.6, .5, 24); vis('h2', t, 86, 90.6, .5, 24);
+
+  // ---- outro ----
+  vis('outro', t, 91.2, T.END + 1, .5, 0);
+  ['o1','o2','o3','o4'].forEach((id, i) => vis(id, t, 91.6 + i * .8, T.END + 1, .5, 24));
+  vis('outro-end', t, 95.4, T.END + 1, .6, 20);
+  // fade to flesh at the very end
+  $('frame').style.opacity = 1 - prog(t, T.END - .6, T.END);
+  return t;
+}
+window.render = render;
+render(0);
+</script>
+</body>
+</html>

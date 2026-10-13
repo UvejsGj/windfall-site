@@ -18,6 +18,8 @@ updates the site within a minute or two. Nothing is built on GitHub.
 | `site.js` | The motion and the list of entries on the notes page. Both pages read in full without it |
 | `tools/build_notes.py` | Builds `notes.html` from Windfall's `docs/protocol-notes.md` |
 | `social-card.png` | The image shown when a link to the site is shared |
+| `media/` | The phone-page film on the home page: a light and a dark render, each as AV1 WebM and H.264 MP4, and a still from each. Made by `tools/film/render.mjs` |
+| `tools/film/` | The film's source, an HTML animation drawn one frame at a time, and the script that renders it |
 | `.nojekyll` | Tells GitHub Pages to serve the files as they are |
 
 To look at a change before pushing it, serve the folder and open it in a browser:
@@ -47,10 +49,31 @@ entry, builds the list of entries, and takes the page frame from `index.html`.
 The home page repeats figures from the Windfall README: the test count, the iOS versions,
 how often transfers complete, and the speed. When those change there, change them here too.
 
+The film's step times (`data-at`) and its written-out words in `index.html` follow
+`tools/film/film.html`. If the film is rendered again with other timing or words, change them
+there too, and the keyframe times in `render.mjs`.
+
 ## Motion
 
 Every animation is an extra. With scripts off, or when the reader's device asks for reduced
 motion, nothing is hidden and nothing moves.
+
+The film never starts by itself, and nothing of it but one still loads until someone plays it.
+Its apple drops from step to step only while it plays, and moves without falling when less
+motion is asked for.
+
+## Rendering the film
+
+The film is drawn by `tools/film/film.html`, which can show any moment of it on request
+(open it with `?theme=dark` for the dark render). To render it again into `media/`:
+
+```
+npm install --no-save playwright
+npx playwright install chromium
+node tools/film/render.mjs
+```
+
+It needs ffmpeg with libx264, libsvtav1 and libwebp, and takes about ten minutes a theme.
 
 ## Licence
 
