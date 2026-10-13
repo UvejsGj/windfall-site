@@ -1,0 +1,1595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Windfall lab notes</title>
+<meta name="description" content="The running log behind Windfall: what was observed, measured, confirmed and refuted while rebuilding AirDrop from the bytes up.">
+<link rel="canonical" href="https://uvejsgj.github.io/windfall-site/notes.html">
+<meta property="og:title" content="Windfall lab notes">
+<meta property="og:description" content="What was observed, measured, confirmed and refuted while rebuilding AirDrop from the bytes up.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://uvejsgj.github.io/windfall-site/notes.html">
+<meta property="og:image" content="https://uvejsgj.github.io/windfall-site/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cmask id='g' maskUnits='userSpaceOnUse' x='-4' y='-4' width='24' height='24'%3E%3Crect x='-4' y='-4' width='24' height='24' fill='%23fff'/%3E%3Cpath d='M-2 9H7' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/mask%3E%3Cg mask='url(%23g)'%3E%3Cpath fill='%23BF2E2A' transform='translate(8.11 7.18) rotate(12) scale(0.2) translate(-50 -48)' d='M50 31C45 25 37 23 30 25C19 28 12 38 12 50C12 67 23 87 36 88C42 88.5 46 86 50 86C54 86 58 88.5 64 88C77 87 88 67 88 50C88 38 81 28 70 25C63 23 55 25 50 31Z'/%3E%3C/g%3E%3Cg fill='%2337722F' transform='translate(8.11 7.18) rotate(12) scale(0.2) translate(-50 -48)'%3E%3Crect x='46.5' y='14' width='11' height='20' rx='5.5' transform='rotate(14 52 30)'/%3E%3Cpath d='M54 24C56 12 66 7 79 8C78 20 68 28 54 24Z'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+<link rel="stylesheet" href="site.css">
+<script>
+if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.documentElement.className = 'js';
+  setTimeout(function () { if (!window.windfallReady) document.documentElement.className = ''; }, 2500);
+}
+</script>
+<script src="site.js" defer></script>
+</head>
+<body>
+<div class="page" id="top">
+
+  <div class="top">
+    <a class="brand" href="index.html" aria-label="Windfall, home">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><mask id="wf-gust-a" maskUnits="userSpaceOnUse" x="-4" y="-4" width="24" height="24"><rect x="-4" y="-4" width="24" height="24" fill="#fff"/><path d="M-2 9H7" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/></mask><g mask="url(#wf-gust-a)"><path fill="var(--skin)" transform="translate(8.11 7.18) rotate(12) scale(0.2) translate(-50 -48)" d="M50 31C45 25 37 23 30 25C19 28 12 38 12 50C12 67 23 87 36 88C42 88.5 46 86 50 86C54 86 58 88.5 64 88C77 87 88 67 88 50C88 38 81 28 70 25C63 23 55 25 50 31Z"/></g><g fill="var(--leaf)" transform="translate(8.11 7.18) rotate(12) scale(0.2) translate(-50 -48)"><rect x="46.5" y="14" width="11" height="20" rx="5.5" transform="rotate(14 52 30)"/><path d="M54 24C56 12 66 7 79 8C78 20 68 28 54 24Z"/></g></svg>
+      Windfall
+    </a>
+    <nav aria-label="Pages">
+      <a class="keep" href="index.html">Overview</a>
+      <a class="keep" href="notes.html" aria-current="page">Lab notes</a>
+      <a class="gh" href="https://github.com/UvejsGj/Windfall">GitHub</a>
+    </nav>
+  </div>
+
+  <main>
+    <header class="notes-head">
+      <span class="label">Lab notes</span>
+      <h1>What was observed, and when.</h1>
+      <p>Running log of what we have <strong>observed</strong>, kept separate from what we have <strong>read</strong>.
+Anything sourced from a third party stays marked as unverified until our own capture
+confirms it — the point of this project is to not take the protocol on faith.</p>
+      <p>The project was called WinDrop until 2026-10-13. The name is replaced throughout this log,
+so commands and paths in the older entries read <code>windfall</code> where they read <code>windrop</code> when
+they were run.</p>
+      <p class="small">23 entries, the latest from 2026-10-08. Written as the work happened, in <a href="https://github.com/UvejsGj/Windfall/blob/main/docs/protocol-notes.md">docs/protocol-notes.md</a>.</p>
+    </header>
+
+    <div class="notes-grid">
+      <aside class="index" aria-label="Entries">
+        <details open>
+          <summary>Entries</summary>
+          <div class="filters" role="group" aria-label="Show">
+            <button type="button" data-kind="all" aria-pressed="true">All<span>23</span></button>
+            <button type="button" data-kind="confirmed" aria-pressed="false">Confirmed<span>6</span></button>
+            <button type="button" data-kind="measured" aria-pressed="false">Measured<span>3</span></button>
+            <button type="button" data-kind="observed" aria-pressed="false">Observed<span>6</span></button>
+            <button type="button" data-kind="refuted" aria-pressed="false">Refuted<span>3</span></button>
+            <button type="button" data-kind="read" aria-pressed="false">Read<span>1</span></button>
+            <button type="button" data-kind="session" aria-pressed="false">Sessions<span>3</span></button>
+          </div>
+          <div class="group">
+            <h2><a href="#continuity-ble-beacon-milestone-0">Continuity BLE beacon (milestone 0)</a></h2>
+            <ol>
+            <li data-kind="measured"><a href="#2026-09-09--measured-ios-really-does-keep-airdrop-off-ordinary-wi-fi"><time datetime="2026-09-09">09-09</time><span class="dot yes"></span><span>iOS really does keep AirDrop off ordinary Wi-Fi</span></a></li>
+            <li data-kind="confirmed"><a href="#2026-09-02--confirmed-mdns-records-resolve-in-a-third-party-browser"><time datetime="2026-09-02">09-02</time><span class="dot yes"></span><span>mDNS records resolve in a third-party browser</span></a></li>
+            <li data-kind="confirmed"><a href="#2026-09-02--confirmed-opendrop-sending-to-us-and-two-real-bugs-found"><time datetime="2026-09-02">09-02</time><span class="dot yes"></span><span>opendrop sending to us, and two real bugs found</span></a></li>
+            <li data-kind="confirmed"><a href="#2026-09-02--confirmed-full-interop-with-opendrop"><time datetime="2026-09-02">09-02</time><span class="dot yes"></span><span>full interop with opendrop</span></a></li>
+            <li data-kind="note"><a href="#2026-09-02--iphone-on-ios-266-share-sheet-open-on-airdrop"><time datetime="2026-09-02">09-02</time><span class="dot none"></span><span>iPhone on iOS 26.6, share sheet open on AirDrop</span></a></li>
+            <li data-kind="confirmed"><a href="#confirmed-the-values-are-truncated-sha-256-of-contact-identifiers"><span></span><span class="dot yes"></span><span>the values are truncated SHA-256 of contact identifiers</span></a></li>
+            <li data-kind="refuted"><a href="#refuted-the-remaining-two-values-are-not-icloud-aliases"><span></span><span class="dot nope"></span><span>the remaining two values are not iCloud aliases</span></a></li>
+            </ol>
+          </div>
+          <div class="group">
+            <h2><a href="#ask-preview-image-fileicon">/Ask preview image (<code>FileIcon</code>)</a></h2>
+            <ol>
+            <li data-kind="read"><a href="#2026-09-12--read-how-opendrop-builds-it"><time datetime="2026-09-12">09-12</time><span class="dot quiet"></span><span>how opendrop builds it</span></a></li>
+            <li data-kind="measured"><a href="#2026-09-12--measured-the-bytes-and-what-windows-can-do-with-them"><time datetime="2026-09-12">09-12</time><span class="dot yes"></span><span>the bytes, and what Windows can do with them</span></a></li>
+            </ol>
+          </div>
+          <div class="group">
+            <h2><a href="#awdl-from-a-non-apple-peer-the-iphone-path">AWDL from a non-Apple peer (the iPhone path)</a></h2>
+            <ol>
+            <li data-kind="observed"><a href="#2026-09-13--observed-ios-266-is-visible-to-owl-on-awdl0"><time datetime="2026-09-13">09-13</time><span class="dot "></span><span>iOS 26.6 is visible to OWL on awdl0</span></a></li>
+            <li data-kind="measured"><a href="#2026-09-13--measured-windfalls-own-receiver-runs-on-linux"><time datetime="2026-09-13">09-13</time><span class="dot yes"></span><span>Windfall's own receiver runs on Linux</span></a></li>
+            <li data-kind="observed"><a href="#2026-09-13--observed-ios-266-airdrops-to-windfalls-receiver-as-far-as-upload"><time datetime="2026-09-13">09-13</time><span class="dot "></span><span>iOS 26.6 AirDrops to Windfall's receiver, as far as /Upload</span></a></li>
+            <li data-kind="observed"><a href="#2026-09-13--observed-the-first-complete-airdrop-from-an-iphone-to-windfall"><time datetime="2026-09-13">09-13</time><span class="dot "></span><span>the first complete AirDrop from an iPhone to Windfall</span></a></li>
+            <li data-kind="observed"><a href="#2026-09-14--observed-stored-blocks-confirmed-179-mb-lands-video-does-not"><time datetime="2026-09-14">09-14</time><span class="dot "></span><span>stored blocks confirmed; 1.79 MB lands, video does not</span></a></li>
+            <li data-kind="observed"><a href="#2026-09-16--observed-one-upload-for-many-files-eagain-exonerated-bigger-buffers-are-worse"><time datetime="2026-09-16">09-16</time><span class="dot "></span><span>one /Upload for many files; EAGAIN exonerated; bigger buffers are worse</span></a></li>
+            <li data-kind="observed"><a href="#2026-09-19--observed-the-ask-cost-is-the-preview-and-ios-27-tripled-it"><time datetime="2026-09-19">09-19</time><span class="dot "></span><span>the /Ask cost is the preview, and iOS 27 tripled it</span></a></li>
+            <li data-kind="confirmed"><a href="#2026-09-20--confirmed-answering-ask-first-fixes-the-declines-the-link-is-the-rest"><time datetime="2026-09-20">09-20</time><span class="dot yes"></span><span>answering /Ask first fixes the declines; the link is the rest</span></a></li>
+            <li data-kind="refuted"><a href="#2026-09-20--refuted-the-phone-does-not-follow-its-wi-fi-channel-far-enough-to-matter"><time datetime="2026-09-20">09-20</time><span class="dot nope"></span><span>the phone does not follow its Wi-Fi channel far enough to matter</span></a></li>
+            <li data-kind="refuted"><a href="#2026-09-21--refuted-a-concurrent-link-on-44-gives-transmit-not-receive"><time datetime="2026-09-21">09-21</time><span class="dot nope"></span><span>a concurrent link on 44 gives transmit, not receive</span></a></li>
+            <li data-kind="confirmed"><a href="#2026-09-22--confirmed-the-phone-is-never-acknowledged-and-resends-every-frame-7-times"><time datetime="2026-09-22">09-22</time><span class="dot yes"></span><span>the phone is never acknowledged, and resends every frame ~7 times</span></a></li>
+            <li data-kind="session"><a href="#2026-10-06--session-11-nothing-arrived-at-a-new-location-which-rules-several-causes-out"><time datetime="2026-10-06">10-06</time><span class="dot "></span><span>nothing arrived at a new location, which rules several causes out</span></a></li>
+            <li data-kind="session"><a href="#2026-10-07--session-12-the-code-is-ruled-out-three-receiver-faults-found-and-fixed"><time datetime="2026-10-07">10-07</time><span class="dot "></span><span>the code is ruled out; three receiver faults found and fixed</span></a></li>
+            <li data-kind="session"><a href="#2026-10-08--session-13-transfers-work-again-at-the-same-place-the-decline-was-too-slow"><time datetime="2026-10-08">10-08</time><span class="dot "></span><span>transfers work again at the same place; the decline was too slow</span></a></li>
+            </ol>
+          </div>
+        </details>
+      </aside>
+
+      <article class="prose">
+        <section class="part flow">
+<h2 id="continuity-ble-beacon-milestone-0">Continuity BLE beacon (milestone 0)</h2>
+<h3 id="hypothesis-under-test">Hypothesis under test</h3>
+<p>Apple manufacturer data, company ID <code>0x004C</code>, is a sequence of TLV records:
+<code>type(1) | length(1) | value(length)</code>, several per advertisement.</p>
+<p>AirDrop is type <code>0x05</code>, payload length <code>0x12</code> (18 bytes):</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Size</th>
+<th>Meaning (hypothesised)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>8</td>
+<td>zero padding / reserved</td>
+</tr>
+<tr>
+<td>8</td>
+<td>1</td>
+<td>version (expected <code>0x01</code>)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>8</td>
+<td>4 x 2-byte truncated SHA-256 of contact identifiers</td>
+</tr>
+<tr>
+<td>17</td>
+<td>1</td>
+<td>zero terminator</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="what-matters-about-this-frame">What matters about this frame</h3>
+<p>It contains <strong>no channel, no SSID, no address, no transport identifier</strong>. It cannot say
+"meet me over here" because there is no field in which to say it. That is the structural
+evidence for ADR-001's claim that the beacon is a wake-up for AWDL specifically, and
+that replicating it from Windows cannot redirect an iPhone onto another transport.</p>
+<h3 id="target-device">Target device</h3>
+<p>iPhone on <strong>iOS 26.6</strong>.</p>
+<p>The hypothesised layout above comes from public BLE research conducted against
+iOS 12-era devices. That is a large version gap across which Apple has reworked
+proximity sharing more than once. <strong>The hypothesis is a starting guess for this target,
+not a specification.</strong> A <code>LAYOUT MISMATCH</code> from the sniffer against iOS 26.6 is the
+expected-plausible outcome and is a finding to record, not a defect to fix.</p>
+<p>Confirmed independently of the AirDrop record: the outer TLV framing itself
+(<code>type | length | value</code>, several records per advertisement, company ID <code>0x004C</code>) does
+hold on current Apple devices — a first capture decoded <code>NearbyInfo</code> (0x10), <code>FindMy</code>
+(0x12) and <code>Handoff</code> (0x0C) correctly from ambient traffic. So if the <code>0x05</code> payload
+does not match, the framing is not the reason; the payload definition changed.</p>
+<p>One capture also produced an advertisement whose trailing bytes declared a length
+overrunning the frame. Unresolved. Candidate explanations, in rough order of
+likelihood: truncation at the 31-byte legacy advertisement limit; padding between
+records; or a record type whose length field we are misreading. The parser now returns
+those bytes so the next occurrence can be examined rather than counted.</p>
+<h3 id="observations">Observations</h3>
+<blockquote>
+<p><strong>A note on the redactions below.</strong> The captured beacon carries four two-byte values,
+two of which are truncated SHA-256 digests of the capturing device owner's own contact
+identifiers. Publishing them would let anyone who already had a candidate email or
+phone number confirm it, so they appear here as placeholders: <code>HSH1</code> and <code>HSH2</code> for the
+two that were never attributed, <code>PHON</code> and <code>MAIL</code> for the two that were, and <code>p1</code>–<code>p4</code>
+for the unexplained four-byte prefix. Byte-level diffs use per-byte placeholders of the
+same width.</p>
+<p>Nothing analytical is lost. Which values held position, which swapped, which were
+identified and by what normalisation are all still legible — arguably more so, since
+the placeholders say what each slot turned out to be.</p>
+</blockquote>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-09--measured-ios-really-does-keep-airdrop-off-ordinary-wi-fi"><span class="meta"><time datetime="2026-09-09">2026-09-09</time><span class="v yes">MEASURED</span><a class="perma" href="#2026-09-09--measured-ios-really-does-keep-airdrop-off-ordinary-wi-fi" aria-label="Link to this entry">#</a></span><span>iOS really does keep AirDrop off ordinary Wi-Fi</span></h4>
+<p>ADR-001 asserted from documentation that iOS advertises AirDrop only on <code>awdl0</code>. That
+was reasoned, never measured. It is now measured, with <code>tools/mdns_sniff.py</code> and
+<code>tools/mdns_probe.py</code>.</p>
+<p><strong>A false negative caught first.</strong> The initial attempt reported zero services and zero
+packets on a LAN that demonstrably carries mDNS. The cause was joining the multicast
+group on <code>INADDR_ANY</code>, which picks one interface by routing and had picked a virtual
+adapter. A negative result from an uncalibrated instrument is worthless, so the test was
+re-run with a Windfall receiver alongside as a <strong>positive control</strong> and the group joined
+on the real adapter by address.</p>
+<p>With the control visible, the negative means something:</p>
+<pre><code>22 packets from 5 sources
+192.168.1.6   UVEJSLAPTOP-a242d3._airdrop._tcp.local.   &lt;- our control, instrument works
+192.168.1.9   ?_companion-link._tcp  ?_rdlink._tcp
+192.168.1.10  ?_companion-link._tcp  ?_rdlink._tcp
+192.168.1.89  ?_companion-link._tcp  ?_rdlink._tcp
+192.168.1.8   ?_airplay._tcp  ?_raop._tcp  ?_airplay-bds._tcp
+</code></pre>
+<p>Every AirDrop name on the wire is ours. Several Apple devices are present and talking,
+and none of them mentions AirDrop.</p>
+<p>Actively querying twelve Apple service types — airdrop, companion-link, rdlink, airplay,
+raop, apple-mobdev2, touch-able, sleep-proxy, smb, afpovertcp, ipp, ipps — produced
+exactly one answer, again our own service. The Apple devices <em>browse</em> for
+companion-link and rdlink but advertise nothing reachable.</p>
+<p><strong>Conclusion.</strong> There is no hidden AirDrop-over-infrastructure channel to piggyback on,
+and no other open Apple service on the link to borrow. The AWDL requirement is real, and
+ADR-001's central claim now rests on measurement rather than on reading.</p>
+</section>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-02--confirmed-mdns-records-resolve-in-a-third-party-browser"><span class="meta"><time datetime="2026-09-02">2026-09-02</time><span class="v yes">CONFIRMED</span><a class="perma" href="#2026-09-02--confirmed-mdns-records-resolve-in-a-third-party-browser" aria-label="Link to this entry">#</a></span><span>mDNS records resolve in a third-party browser</span></h4>
+<p><code>tools/mdns_browse.py</code> drives python-zeroconf, an independent mDNS implementation,
+against a running <code>windfall receive</code>. Full round trip, not just a parse:</p>
+<pre><code>instance : UVEJSLAPTOP-0cedda._airdrop._tcp.local.
+server   : uvejslaptop.local.
+port     : 8770
+addresses: ['172.27.48.1', '192.168.1.39', 'fe80::17fb:83c4:f49a:5cd5', 'fe80::2fe1:aac2:4e23:9954']
+props    : {'flags': '10'}
+</code></pre>
+<p>PTR discovery, SRV resolution, TXT decoding and both address families all survive. The
+<code>flags</code> value decodes to 0xA — <code>SupportsDvZip | SupportsMixedTypes</code> — which is what the
+receiver advertises, so the capability bits a peer would negotiate against arrive intact.</p>
+<p>Run on Windows rather than in WSL deliberately: opendrop's browser is <code>V6Only</code> bound to
+one interface address, which cannot cross the WSL NAT boundary and collides with the
+host's address under mirrored networking. Neither limitation is ours, and neither says
+anything about the records.</p>
+<p><strong>Known wart, not yet addressed.</strong> We advertise every address on every non-loopback
+interface, which here includes <code>172.27.48.1</code> — the WSL virtual switch, unreachable from
+anywhere else. A peer on the real network that tries addresses in order may stall on it
+before reaching a useful one. Apple's own responder also advertises broadly, so this is
+not obviously wrong, but it is worth revisiting if a real device is slow to connect.</p>
+</section>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-02--confirmed-opendrop-sending-to-us-and-two-real-bugs-found"><span class="meta"><time datetime="2026-09-02">2026-09-02</time><span class="v yes">CONFIRMED</span><a class="perma" href="#2026-09-02--confirmed-opendrop-sending-to-us-and-two-real-bugs-found" aria-label="Link to this entry">#</a></span><span>opendrop sending to us, and two real bugs found</span></h4>
+<p><code>opendrop send</code> to <code>windfall receive</code>, over IPv4 between WSL2 and the Windows host.
+64-byte file, byte-identical on arrival (MD5 <code>8e87b52c…</code> both sides). This is the
+direction that exercises our <strong>readers</strong>, and unlike the sending direction it did not
+work first time. It found two genuine defects.</p>
+<p><strong>Bug 1 — the upload compression is not signalled in a header.</strong></p>
+<p>opendrop sends only <code>Content-Type: application/x-cpio</code> and gzips the body regardless.
+It never sets <code>Content-Encoding</code>. Our receiver had been guessing from its own advertised
+capability flags: "we said we support DVZip, so this is probably DVZip." It was gzip.</p>
+<p>The failure named itself. The DVZip reader read the first four bytes as a block length
+and reported <code>Block of 529205248 bytes exceeds the 16777216 byte limit</code> — and
+529205248 is <code>0x1F8B0800</code>, the gzip magic read as a big-endian integer.</p>
+<p>Fixed by sniffing instead of guessing. All three encodings are self-identifying: gzip
+starts <code>1f 8b</code>, cpio starts with an ASCII magic, and anything else is DVZip, whose frame
+opens with a length rather than a recognisable constant. <code>Content-Encoding</code> is still
+read when a peer sends one, but it no longer gets the deciding vote — the bytes do.</p>
+<p><strong>Bug 2 — opendrop writes odc cpio, not newc.</strong></p>
+<p>Its uploads arrive with magic <code>070707</code>, and our reader accepted only <code>070701</code>. The cause
+is the libarchive trap already recorded here: opendrop calls
+<code>libarchive.custom_writer(..., "cpio", ...)</code>, and libarchive's format name <code>cpio</code> selects
+<strong>odc</strong>, not newc.</p>
+<p>Since opendrop interoperates with real Apple devices, odc must be acceptable to AirDrop,
+which makes a newc-only reader stricter than the protocol actually is. The reader now
+accepts both. They differ in more than a magic number: newc uses hexadecimal fields in a
+110-byte header and pads both name and data to four bytes; odc uses <strong>octal</strong> fields in a
+76-byte header and pads <strong>nothing</strong>. We continue to write newc, which opendrop reads
+without complaint.</p>
+</section>
+<h4 id="what-the-two-directions-together-now-cover">What the two directions together now cover</h4>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th>Windfall → opendrop</th>
+<th>opendrop → Windfall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bplist</td>
+<td>writer</td>
+<td><strong>reader</strong></td>
+</tr>
+<tr>
+<td>cpio</td>
+<td>writer (newc)</td>
+<td><strong>reader (odc)</strong></td>
+</tr>
+<tr>
+<td>compression</td>
+<td>gzip encode</td>
+<td><strong>gzip decode, sniffed</strong></td>
+</tr>
+<tr>
+<td>state machine</td>
+<td>sender</td>
+<td><strong>receiver, incl. consent gate</strong></td>
+</tr>
+<tr>
+<td>TLS + HTTP</td>
+<td>client</td>
+<td><strong>server</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Still untested against a third party: <strong>mDNS discovery</strong> and <strong>DVZip</strong>. Both transfers
+bypassed discovery with a hand-written peer address, and opendrop only ever speaks gzip,
+so our chunked-zlib framing has still never been read by anything but us.</p>
+<h4 id="more-opendrop-facts-worth-recording">More opendrop facts worth recording</h4>
+<ul>
+<li>
+<code>opendrop send</code> has <strong>no direct-address option</strong>. It reads
+<code>~/.opendrop/discover.last.json</code>, written by <code>opendrop find</code>, and <code>-r</code> selects an entry
+from it by index, ID or name. Writing that file by hand is a clean way to bypass
+discovery, which is how this test was run.</li>
+<li>Its zeroconf is constructed <code>ip_version=IPVersion.V6Only</code>, bound to the interface's
+link-local address. Under WSL mirrored networking, WSL and Windows share that address,
+so opendrop sees our announcements as self-originated and discards them. Verified our
+packets do arrive, and that standalone python-zeroconf parses them correctly — PTR,
+SRV, TXT and both address records, <code>valid: True</code>. The records are fine; the address
+collision is the problem.</li>
+<li>It is broken with <code>libarchive-c</code> 5.x: it calls <code>ArchiveEntry(None, entry_p)</code> against a
+constructor whose argument order has since changed, so the entry pointer lands in
+<code>header_codec</code> and raises <code>TypeError: encode() argument 'encoding' must be str, not int</code>. <code>pip install libarchive-c==2.9</code> fixes it.</li>
+<li>
+<code>opendrop send</code> fails for <strong>every image</strong> on current Pillow. Generating the /Ask
+preview calls <code>Image.ANTIALIAS</code>, which Pillow 10 removed, so the send dies with
+<code>AttributeError</code> before a byte reaches the network. Non-image files are unaffected,
+which is why earlier interop runs never hit it. <code>pip install "Pillow&lt;10"</code> fixes it.</li>
+</ul>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-02--confirmed-full-interop-with-opendrop"><span class="meta"><time datetime="2026-09-02">2026-09-02</time><span class="v yes">CONFIRMED</span><a class="perma" href="#2026-09-02--confirmed-full-interop-with-opendrop" aria-label="Link to this entry">#</a></span><span>full interop with opendrop</span></h4>
+<p>Windfall sender to <code>opendrop receive</code>, over IPv6 link-local between Windows and WSL2
+Ubuntu 22.04. Two files, 69 and 6756 bytes, both arriving byte-identical (MD5 verified
+against the originals).</p>
+<pre><code>Sending to fe80::215:5dff:fe69:142%45 @ [...]:8771 via direct (flags=0x0)
+Peer identifies as 'UvejsLaptop' (OpenDrop)
+Accepted. Uploading via gzip...
+Done.
+</code></pre>
+<p>This is the strongest validation available without Apple hardware. Every layer was
+exercised against an implementation written by people who read the protocol
+independently of us:</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TLS, self-signed, no validation</td>
+<td>handshake completed</td>
+</tr>
+<tr>
+<td>HTTP/1.1 framing on one connection</td>
+<td>three requests, no desync</td>
+</tr>
+<tr>
+<td>bplist <strong>writer</strong>
+</td>
+<td>opendrop parsed our /Discover and /Ask bodies</td>
+</tr>
+<tr>
+<td>bplist <strong>reader</strong>
+</td>
+<td>we parsed its /Discover response and read ReceiverModelName</td>
+</tr>
+<tr>
+<td>Discover / Ask / Upload state machine</td>
+<td>consent prompt raised, upload accepted</td>
+</tr>
+<tr>
+<td>cpio newc writer</td>
+<td>opendrop extracted both members</td>
+</tr>
+<tr>
+<td>gzip path</td>
+<td>selected and understood</td>
+</tr>
+</tbody>
+</table></div>
+<p>Notably the <code>/Ask</code> plist was where a mismatch seemed most likely, since its field names
+and its boolean-versus-integer choices were read off opendrop's source rather than
+observed. They were right.</p>
+<p>Still unproven: that any of this satisfies <strong>Apple</strong>. opendrop is a reimplementation, so
+a shared misreading of Apple's behaviour would pass this test. Only an Apple device
+settles that.</p>
+</section>
+<h4 id="opendrop-facts-worth-recording">opendrop facts worth recording</h4>
+<p>Learned by reading its source and running it, not from documentation:</p>
+<ul>
+<li>
+<strong>Its listener is IPv6-only.</strong> <code>server.py</code> uses <code>HTTPServerV6</code> with
+<code>address_family = socket.AF_INET6</code>, bound to the interface's link-local address. An
+IPv4 address for the same host will never connect.</li>
+<li>
+<strong>It listens on port 8771</strong>, not AirDrop's 8770.</li>
+<li>
+<strong><code>-n</code> is the display name, <code>-i</code> is the interface.</strong> <code>-n eth0</code> is silently accepted and
+leaves it bound to <code>awdl0</code>, which then fails with a message about <code>owl</code> not running —
+an error that points at the wrong thing entirely.</li>
+<li>It reports <code>ReceiverModelName</code> as <code>OpenDrop</code>.</li>
+</ul>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-02--iphone-on-ios-266-share-sheet-open-on-airdrop"><span class="meta"><time datetime="2026-09-02">2026-09-02</time><a class="perma" href="#2026-09-02--iphone-on-ios-266-share-sheet-open-on-airdrop" aria-label="Link to this entry">#</a></span><span>iPhone on iOS 26.6, share sheet open on AirDrop</span></h4>
+<p><code>continuity-sniff --seconds 90</code>, extended (BLE 5) advertisements enabled. 421 Apple
+advertisements, 14 distinct payloads. Two distinct AirDrop payloads from one device
+(<code>40:0C:E4:xx:xx:xx</code>), repeated 42 and 123 times — stable, not noise.</p>
+<pre><code>p1p2p3p4 00000000 03 HSH1 PHON HSH2 MAIL 00      42x, first seen 14:20:32
+p1p2p3p4 00000000 03 HSH1 MAIL HSH2 PHON 00     123x, first seen 14:20:45
+</code></pre>
+<p>Scored against the hypothesis:</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Predicted</th>
+<th>Observed</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Payload length</td>
+<td>18 bytes</td>
+<td>18 bytes</td>
+<td><strong>confirmed</strong></td>
+</tr>
+<tr>
+<td>Bytes [0..8)</td>
+<td>8 zero bytes</td>
+<td><code>p1 p2 p3 p4 00 00 00 00</code></td>
+<td>
+<strong>refuted</strong> — first 4 carry data</td>
+</tr>
+<tr>
+<td>Byte [8], version</td>
+<td><code>0x01</code></td>
+<td><code>0x03</code></td>
+<td>position confirmed, value differs</td>
+</tr>
+<tr>
+<td>Bytes [9..17)</td>
+<td>4 x 2-byte contact hashes</td>
+<td>4 plausible 2-byte values</td>
+<td>unconfirmed</td>
+</tr>
+<tr>
+<td>Byte [17]</td>
+<td><code>0x00</code></td>
+<td><code>0x00</code></td>
+<td><strong>confirmed</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>The 18-byte frame size and the trailing zero survive intact from iOS 12-era research all
+the way to iOS 26.6.</p>
+</section>
+<h4 id="the-reordering">The reordering</h4>
+<p>Both payloads carry the same four values in a different order, from the same BLE
+address, 13 seconds apart, with prefix and version unchanged:</p>
+<pre><code>A:  HSH1  PHON  HSH2  MAIL
+B:  HSH1  MAIL  HSH2  PHON
+</code></pre>
+<p>Slots 1 and 3 swap; slots 0 and 2 hold. Exactly two orderings across 165 advertisements
+points to a rotation event rather than per-advertisement randomisation — the latter
+would yield many distinct orderings, not two with high repeat counts.</p>
+<p>Two explanations, not yet separated:</p>
+<ol>
+<li>The ordering is shuffled on some trigger, so the beacon cannot be fingerprinted by
+the sequence. The <em>set</em> would then be the identity and the order would carry nothing.</li>
+<li>The 2-byte grouping is wrong and we are slicing a field with different internal
+structure, making the "reordering" an artefact of a bad decode.</li>
+</ol>
+<p>Explanation (2) does not disturb any byte-level fact in the table above; it only
+reinterprets <code>[9..17)</code>.</p>
+<section class="entry flow">
+<h4 class="eh" id="confirmed-the-values-are-truncated-sha-256-of-contact-identifiers"><span class="meta"><span class="v yes">CONFIRMED</span><a class="perma" href="#confirmed-the-values-are-truncated-sha-256-of-contact-identifiers" aria-label="Link to this entry">#</a></span><span>the values are truncated SHA-256 of contact identifiers</span></h4>
+<p>Two of the four observed values were reproduced exactly by hashing the device owner's
+own identifiers, which settles the reading of the field:</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Observed</th>
+<th>Identifier kind</th>
+<th>Normalisation that matched</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAIL</code></td>
+<td>iCloud email address</td>
+<td>hashed as-is (input was already lowercase)</td>
+</tr>
+<tr>
+<td><code>PHON</code></td>
+<td>phone number</td>
+<td>
+<strong>digits only</strong> — <code>+</code> and punctuation stripped, country code retained</td>
+</tr>
+</tbody>
+</table></div>
+<p>The phone result is the informative one, because the alternatives were tested in the
+same run and all missed: the <code>+</code>-prefixed form, the last-10-digit form and the
+last-9-digit form produced unrelated digests. So Apple hashes the full international
+number with every non-digit removed.</p>
+<p>Residual unknown on the email side: the address that matched was already entirely
+lowercase, so the capture cannot distinguish "hashed as-is" from "lowercased first".
+<code>ContactHash.Normalize</code> assumes lowercasing, since that is what makes a user-typed
+address match, but a mixed-case address has not been tested. This must be resolved
+before the rule is relied on for contact matching in <code>/Discover</code>.</p>
+</section>
+<section class="entry flow">
+<h4 class="eh" id="refuted-the-remaining-two-values-are-not-icloud-aliases"><span class="meta"><span class="v nope">REFUTED</span><a class="perma" href="#refuted-the-remaining-two-values-are-not-icloud-aliases" aria-label="Link to this entry">#</a></span><span>the remaining two values are not iCloud aliases</span></h4>
+<p>An iCloud account carries automatic <code>@me.com</code> and <code>@mac.com</code> aliases, which would have
+neatly accounted for the other two slots. Hashing both produced <code>B8BD</code> and <code>96AF</code> —
+neither is <code>HSH1</code> or <code>HSH2</code>. Hypothesis dead.</p>
+</section>
+<h4 id="byte-level-diff-which-reframes-the-slot-reading">Byte-level diff, which reframes the slot reading</h4>
+<p>Aligning the two payloads:</p>
+<pre><code>idx:  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17
+A:   p1 p2 p3 p4 00 00 00 00 03 a1 a2 f1 f2 b1 b2 e1 e2 00
+B:   p1 p2 p3 p4 00 00 00 00 03 a1 a2 e1 e2 b1 b2 f1 f2 00
+                                      ^^^^^       ^^^^^
+</code></pre>
+<p>Bytes 0–10 and byte 17 are byte-identical. Only 11–16 differ, and they differ by
+swapping the confirmed phone hash with the confirmed email hash.</p>
+<p>This weakens the "four homogeneous hash slots" reading. <code>HSH1</code> sits inside the invariant
+region alongside the prefix and version byte, so it may belong to a header rather than
+to the hash array. <code>HSH2</code> is stranger still: it holds position while sitting <em>between</em>
+the two values that swap.</p>
+<p>Candidates for <code>HSH1</code> and <code>HSH2</code>, unresolved:</p>
+<ol>
+<li>Further contact identifiers the owner has on the account — a non-iCloud Apple ID
+address, a rescue email, or a second phone number. Testable with <code>contact-hash</code>.</li>
+<li>Not contact hashes at all. <code>HSH1</code>'s position in the invariant region is consistent
+with it being a header field that happens to be two bytes wide.</li>
+<li>A different normalisation of an identifier already tested.</li>
+</ol>
+<p>Note that neither remaining value blocks implementation: the field's type and its
+normalisation are both established, which is what the sender side needs.</p>
+<h4 id="verifying-the-contact-hash-reading">Verifying the contact-hash reading</h4>
+<p><code>contact-hash</code> (in <code>src/Windfall.Tools.ContactHash</code>) tests whether those four values are
+truncated SHA-256 digests of the sender's contact identifiers. Apple's normalisation is
+unknown and consequential — <code>+1 (555) 010-9999</code> and <code>15550109999</code> hash to unrelated
+digests — so the tool sweeps the plausible variants and reports which one lands, if any.
+A hit identifies the field and the normalisation together. A total miss falsifies the
+contact-hash reading.</p>
+<p>It runs entirely locally and prints only 4-hex-digit prefixes, so an identifier never
+has to leave the machine in order to check a match.</p>
+<h3 id="open-questions">Open questions</h3>
+<ol>
+<li>Does the beacon appear at all in "Everyone / Everyone for 10 Minutes", or only when
+the share sheet is actively open?</li>
+<li>Are the contact hashes populated in Everyone mode, or zeroed?</li>
+<li>Does the sending iPhone also emit <code>NearbyAction</code> (0x0F) alongside AirDrop (0x05)?
+If so, what distinguishes them?</li>
+<li>Has the layout changed on current iOS versus the published research?</li>
+<li>Does iOS 26.6 advertise AirDrop as a BLE 5 <strong>extended</strong> advertisement rather than a
+legacy one? Extended advertising is not delivered to a watcher unless explicitly
+requested, so a naive scanner sees silence and misreads it as "the phone is not
+advertising". It would also lift the 31-byte payload cap, which is one candidate
+explanation for truncated tails observed in legacy captures.</li>
+<li>What triggers the hash reordering? Re-opening the share sheet, a timer, or something
+else? Separating explanation (1) from (2) needs a capture long enough to count
+distinct orderings, plus one where the share sheet is deliberately closed and
+reopened.</li>
+<li>What are the first four bytes (<code>p1 p2 p3 p4</code>)? Constant across both payloads from
+this device; unknown whether they are constant across devices, across sessions, or
+over time. A capture from a second Apple device would separate device identity from
+protocol constant.</li>
+<li>Why is the version byte <code>0x03</code>? Is it an AirDrop protocol revision, and does an older
+Apple device on the same network emit a lower value?</li>
+</ol>
+        </section>
+        <section class="part flow">
+<h2 id="ask-preview-image-fileicon">/Ask preview image (<code>FileIcon</code>)</h2>
+<p>The receiver's prompt shows a picture of what is being sent. That picture travels inside
+the /Ask body. It is the only field there that is not text, and a receiver has to
+decode it <strong>before</strong> the user has agreed to anything.</p>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-12--read-how-opendrop-builds-it"><span class="meta"><time datetime="2026-09-12">2026-09-12</time><span class="v quiet">READ</span><a class="perma" href="#2026-09-12--read-how-opendrop-builds-it" aria-label="Link to this entry">#</a></span><span>how opendrop builds it</span></h4>
+<p>From the installed opendrop's <code>client.py</code> and <code>util.py</code>:</p>
+<ul>
+<li>
+<code>FileIcon</code> is a <strong>top-level</strong> key holding a <code>data</code> object. There is one preview for
+the whole request, not one per file.</li>
+<li>It is attached only when the first file's leading 128 bytes sniff as an image (via
+<code>fleep</code>). Otherwise the key is absent. It is never present and empty.</li>
+<li>
+<code>generate_file_icon</code> applies the EXIF rotation, fits the image in a <strong>540 × 540</strong> box
+and saves it as <strong>JPEG 2000</strong>. A 64 px variant exists but is commented out.</li>
+<li>
+<code>server.py</code> never reads the key. opendrop's receiver ignores previews completely.</li>
+</ul>
+<p>The JPEG 2000 choice is unusual enough that it is probably copied from observed Apple
+traffic. That is an inference, not an observation.</p>
+</section>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-12--measured-the-bytes-and-what-windows-can-do-with-them"><span class="meta"><time datetime="2026-09-12">2026-09-12</time><span class="v yes">MEASURED</span><a class="perma" href="#2026-09-12--measured-the-bytes-and-what-windows-can-do-with-them" aria-label="Link to this entry">#</a></span><span>the bytes, and what Windows can do with them</span></h4>
+<p>Generated through opendrop's own code path (<code>tools/fileicon_oracle.py</code>, the fixture
+<code>opendrop-ask-with-icon.bplist</code>):</p>
+<pre><code>thumbnail (540, 360), icon 19276 bytes, ask body 19634 bytes
+icon head 00 00 00 0c 6a 50 20 20 0d 0a 87 0a
+</code></pre>
+<p>That is the JP2 signature box. Its body <code>0D 0A 87 0A</code> is designed so that CRLF
+translation or 7-bit stripping in transit breaks it visibly.</p>
+<p>Windows cannot decode it. <code>BitmapDecoder.Create</code> tries every installed WIC codec by
+content, the widest net available, and it fails:</p>
+<pre><code>control.jpg       -&gt; decoded by 'JPEG Decoder' 540x360
+opendrop-icon.jp2 -&gt; FAILED: NotSupportedException No imaging component suitable to complete this operation was found.
+</code></pre>
+<p>The JPEG is the same thumbnail, re-encoded. It is the positive control: it shows the
+decoder path works, so the JP2 failure is about the format and not the harness.</p>
+</section>
+<h4 id="what-windfall-does-about-it">What Windfall does about it</h4>
+<p><strong>Receiving.</strong> The format is identified from its signature (<code>PreviewImage.Sniff</code>).
+Only JPEG and PNG are decoded, each by its own named decoder. Nothing goes through the
+content-sniffing path, because that path reaches every third-party codec on the
+machine, and each of those is parsing code a stranger could reach without a click.
+Image dimensions come from the header and are capped at 2048 before any pixels are
+decompressed. A megabyte of PNG can claim 65535 × 65535. A PNG header claiming
+60000 × 60000 is refused in 3 ms. For JPEG 2000, or no icon at all, the prompt shows
+the Windows icon for the first file's type instead.</p>
+<p><strong>Sending.</strong> JPEG, from the shell's thumbnail, fitted in opendrop's 540 box. JPEG
+because Windows has no JPEG 2000 encoder either. The icon is sent only when the
+thumbnail is opaque, because JPEG would fill a transparent PNG's transparent areas
+with whatever colour data sat under them.</p>
+<p><strong>Unverified against Apple:</strong> whether an iPhone renders a JPEG here, ignores it, or
+rejects the whole /Ask. The CLI's <code>send --icon &lt;file&gt;</code> attaches any bytes unexamined,
+so one AWDL session can separate these cases: no icon, a JPEG, and opendrop's JP2.</p>
+<h3 id="open-questions-1">Open questions</h3>
+<ol>
+<li>
+~Does Apple send JPEG 2000 as well?~ <strong>Yes.</strong> iOS 26.6 sent JPEG 2000 previews
+of 43,442 and 54,397 bytes (observed 2026-09-13, below).</li>
+<li>Does iOS accept a JPEG <code>FileIcon</code>? A PNG? Does a format it dislikes cost only the
+preview, or the transfer?</li>
+<li>What size does Apple send, and does it also send the 64 px variant opendrop left
+commented out?</li>
+</ol>
+        </section>
+        <section class="part flow">
+<h2 id="awdl-from-a-non-apple-peer-the-iphone-path">AWDL from a non-Apple peer (the iPhone path)</h2>
+<p>Identifiers below are redacted with width-preserving placeholders, as elsewhere in these
+notes: device name, AWDL MACs, the link-local addresses derived from them, and OWL's
+peer UUIDs.</p>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-13--observed-ios-266-is-visible-to-owl-on-awdl0"><span class="meta"><time datetime="2026-09-13">2026-09-13</time><span class="v ">OBSERVED</span><a class="perma" href="#2026-09-13--observed-ios-266-is-visible-to-owl-on-awdl0" aria-label="Link to this entry">#</a></span><span>iOS 26.6 is visible to OWL on awdl0</span></h4>
+<p>Setup: MSI Sword 16 HX, Intel AX211 <code>[8086:7a70]</code>, Kali Live, OWL
+<code>0~git20220130-0kali1+b1</code>. iPhone on iOS 26.6, AirDrop set to Everyone for 10 Minutes,
+share sheet <strong>closed</strong>. The configuration that worked, and why, is in
+<code>bridge-hardware-setup.md</code>: monitor mode set by hand, OWL with <code>-N</code>, channel 6.</p>
+<p>OWL's log:</p>
+<pre><code>DEBUG: Channel 6 [2437 MHz] is available for frame injection
+INFO : add peer xx:xx:xx:xx:xx:xx (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+DEBUG: new election tree: xx:xx:xx:xx:xx:xx -&gt; xx:xx:xx:xx:xx:xx (met 115, ctr 865)
+INFO : add peer xx:xx:xx:xx:xx:xx (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+</code></pre>
+<p>The phone advertised a channel sequence of mostly 44 and occasionally 6.</p>
+<p><code>tcpdump -i awdl0</code>, three packets of this form:</p>
+<pre><code>IP6 fe80::xxxx:xxff:fexx:xxxx.5353 &gt; ff02::fb.5353: PTR &lt;owner&gt;'s iPhone._applicationServicePairing._tcp.local., PTR &lt;owner&gt;'s iPhone._appSvcPrePair._tcp.local. (126)
+</code></pre>
+<p>The source is the EUI-64 link-local address of the first peer OWL added. That ties the
+mDNS traffic to the AWDL peer, rather than to anything else OWL happened to decapsulate.</p>
+<p><strong>What this settles</strong></p>
+<ul>
+<li>OWL synchronises with a current iPhone: it built an election tree with the phone as
+master, and decapsulated the phone's data frames into <code>awdl0</code>. The fear that iOS 16+
+would shut non-Apple devices out does not apply at the link layer, at least not to
+receiving.</li>
+<li>A card without active monitor mode receives AWDL discovery traffic. This was predicted
+and is now observed. Active monitor only affects ACKs for unicast frames, and mDNS is
+multicast.</li>
+<li>The iPhone announces services on AWDL <strong>without</strong> the share sheet open.</li>
+</ul>
+<p><strong>What it does not settle</strong></p>
+<ul>
+<li>Whether the phone sends <strong>unicast</strong> frames to us, and whether they survive a card that
+cannot ACK them. Multicast needs neither.</li>
+<li>Whether the phone considers us a peer at all, as opposed to us merely following its
+schedule and overhearing it.</li>
+</ul>
+<p><strong>Not observed:</strong> <code>_airdrop._tcp</code>. That is expected with the share sheet closed, and the
+roles matter here. A <strong>sender</strong> browses, so with the share sheet open, expect mDNS
+<em>queries</em> for <code>_airdrop._tcp.local</code> from the phone, not announcements. An iPhone
+<em>advertises</em> <code>_airdrop._tcp</code> only as a receiver, once woken.</p>
+<p><code>_applicationServicePairing._tcp</code> and <code>_appSvcPrePair._tcp</code> are new to these notes and
+unattributed.</p>
+<p><strong>The second peer</strong> is unidentified: another Apple device nearby, or the same phone
+after an AWDL MAC rotation.</p>
+</section>
+<h3 id="open-questions-2">Open questions</h3>
+<ol>
+<li>With the share sheet open, does the phone send mDNS queries for <code>_airdrop._tcp</code> on
+awdl0?</li>
+<li>Given a receiver advertised on awdl0, does the phone open TCP to it? A SYN to the
+advertised port answers this without any application-layer code.</li>
+<li>Does unicast complete on channel 6 alone, without ACKs, while the phone spends most of
+its time on 44?</li>
+<li>Does a non-Apple receiver appear in the iOS 26.6 share sheet? That needs a successful
+<code>/Discover</code>, so it answers 2 and 3 as well.</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-13--measured-windfalls-own-receiver-runs-on-linux"><span class="meta"><time datetime="2026-09-13">2026-09-13</time><span class="v yes">MEASURED</span><a class="perma" href="#2026-09-13--measured-windfalls-own-receiver-runs-on-linux" aria-label="Link to this entry">#</a></span><span>Windfall's own receiver runs on Linux</span></h4>
+<p>Before pointing our receiver at <code>awdl0</code>, a self-contained <code>linux-x64</code> build of the CLI was
+run in WSL2 (Ubuntu 22.04). Two parts of it had never run anywhere but Windows: TLS, where
+.NET uses OpenSSL on Linux instead of SChannel, and the socket options mDNS depends on.</p>
+<ul>
+<li>
+<p><strong>Transfers:</strong> Windows CLI to the Linux receiver, over IPv4 and over a scoped IPv6
+link-local address (<code>fe80::…%39</code>). Three files arrived byte-identical by MD5. The
+receiver identified the /Ask preview as a 7,733-byte JPEG.</p>
+</li>
+<li>
+<p><strong>mDNS:</strong> <code>windfall browse</code> inside WSL found the receiver at its scoped link-local
+address (<code>%2</code>, eth0), with flags <code>0xA</code>.</p>
+</li>
+<li>
+<p><strong>The interface filter.</strong> Both mDNS and the address list skip interfaces that are not
+<code>OperationalStatus.Up</code>. Virtual links often report operstate <code>unknown</code>, and OWL's
+<code>awdl0</code> may be one of them. If .NET mapped that to anything but <code>Up</code>, the receiver
+would ignore <code>awdl0</code> and fail silently. Test: a dummy interface with operstate
+<code>unknown</code> and a link-local address. Membership of <code>ff02::fb</code> was captured before,
+during and after the run, so a join by some other daemon could not pass for ours:</p>
+<pre><code>BEFORE windfall:  eth0: -        wdtest0: -
+DURING windfall:  eth0: joined   wdtest0: joined
+AFTER windfall:   eth0: -        wdtest0: -
+</code></pre>
+<p>The worry is refuted: an operstate-<code>unknown</code> link is joined. A dummy interface stands in
+for OWL's device here; <code>awdl0</code> itself has not been tested this way.</p>
+</li>
+<li>
+<p><strong>Visibility in the field.</strong> <code>receive</code> now prints the joined interfaces at startup
+(<code>mDNS on eth0/IPv6, …</code>). Whether <code>awdl0</code> was joined becomes a line to read, not
+something inferred from an empty share sheet.</p>
+</li>
+</ul>
+</section>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-13--observed-ios-266-airdrops-to-windfalls-receiver-as-far-as-upload"><span class="meta"><time datetime="2026-09-13">2026-09-13</time><span class="v ">OBSERVED</span><a class="perma" href="#2026-09-13--observed-ios-266-airdrops-to-windfalls-receiver-as-far-as-upload" aria-label="Link to this entry">#</a></span><span>iOS 26.6 AirDrops to Windfall's receiver, as far as /Upload</span></h4>
+<p>Kali Live on the AX211, OWL on channel 6 with <code>-N</code>, and Windfall's CLI receiver built from
+source on Kali at <code>1554b30</code>. It started with <code>mDNS on eth0/IPv6, eth0/IPv4, awdl0/IPv6</code>.
+The iPhone had AirDrop set to Everyone for 10 Minutes.</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Rung</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phone browses</td>
+<td>✅ mDNS query for <code>_airdrop._tcp.local</code> from the phone's AWDL link-local address</td>
+</tr>
+<tr>
+<td>We answer</td>
+<td>✅ <code>kali-xxxxxx._airdrop._tcp</code>, SRV <code>kali.local.:8770</code>, TXT <code>flags=10</code>
+</td>
+</tr>
+<tr>
+<td>TCP</td>
+<td>✅ connection to 8770 established</td>
+</tr>
+<tr>
+<td>Listed</td>
+<td>✅ "kali" appeared in the AirDrop row, so <code>/Discover</code> was accepted</td>
+</tr>
+<tr>
+<td><code>/Ask</code></td>
+<td>✅ every attempt; the consent prompt showed the request</td>
+</tr>
+<tr>
+<td><code>/Upload</code></td>
+<td>❌ failed, differently in two runs (below)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>What this settles.</strong> iOS 26.6 does not refuse a non-Apple receiver in Everyone mode. It
+browses for one on AWDL, connects over unicast TCP, and accepts its <code>/Discover</code> and
+<code>/Ask</code> responses. The feared iOS 16+ lockout does not exist at any layer tested. Unicast
+also works through a card without active monitor mode, though not reliably.</p>
+<p><strong>The <code>/Ask</code> from an iPhone</strong>, sanitised:</p>
+<pre><code>'&lt;owner&gt;'s iPhone' (iPhone) wants to send:
+  IMG_xxxx.JPG  [public.jpeg]
+  preview: 43,442 bytes, Jpeg2000
+</code></pre>
+<p><code>SenderModelName</code> is <code>iPhone</code>, and <code>FileType</code> is a proper UTI. The preview is <strong>JPEG 2000</strong>,
+which confirms what opendrop's source suggested. At 43–54 KB it is more than twice the
+size of opendrop's 540 px encode of a flat test image. Its dimensions are unknown, because
+nothing on Windows decodes it, which also means Windfall's GUI can never show an iPhone's
+preview. It shows the file-type icon instead.</p>
+<p><strong>Run B, a ~60 KB photo: the upload arrived, and our extractor refused it.</strong></p>
+<pre><code>Connection failed: Archive member '.' resolves to the download directory itself.
+</code></pre>
+<p>The body came through TLS, was decompressed and was parsed as cpio. The encoding was not
+logged, so whether our DVZip reader has now met Apple is still unknown. The archive opens
+with a directory member named <code>.</code>, the archive root, and the traversal guard rejected it.
+<strong>Fixed:</strong> a root <em>directory</em> member is skipped. A file named <code>.</code>, and every escaping name,
+is still refused. The receiver now logs the encoding with its first bytes, and each
+archive member, so the next transfer answers the DVZip question.</p>
+<p><strong>Run A, a photo with a 54 KB preview: the connection died before any upload data.</strong></p>
+<pre><code>Connection failed: Connection closed before a chunk header.
+Connection failed: Unable to read data from the transport connection: Connection reset by peer.
+</code></pre>
+<p>tcpdump showed RSTs from the phone after about 60 KB acknowledged (<code>seq 60601 ack 3189</code>).
+That fits <code>/Ask</code>, preview included, arriving, and the connection dying as <code>/Upload</code>
+began. Nothing reached the extractor, so this failure belongs to the transport, not the
+parser.</p>
+<p><strong>The transport.</strong> During both transfers OWL logged bursts of
+<code>ERROR: unable to inject packet (send: Resource temporarily unavailable)</code>: <code>EAGAIN</code> on
+its injection socket, so frames toward the phone were dropped. Peers churned throughout,
+with repeated add, remove and re-election. The phone's channel sequence favours 44 while
+we are held to 6. Together these make throughput, not protocol correctness, the
+constraint on this hardware.</p>
+<p><strong>Another Apple device in range</strong> advertised <code>_airdrop._tcp</code> with TXT <code>flags=14335</code>,
+which is <code>0x37FF</code>: bits 0–10, 12 and 13. Ours is <code>0x0A</code>, DVZip (<code>0x02</code>) and MixedTypes
+(<code>0x08</code>) in opendrop's mapping. Apple sets every bit opendrop names, plus three it does
+not. iOS listed us with only two bits, so none of the others gates a photo transfer.</p>
+</section>
+<h3 id="open-questions-3">Open questions</h3>
+<ol>
+<li>Which encoding does iOS use for <code>/Upload</code> to a receiver advertising DVZip? The next
+run logs it.</li>
+<li>With the root-member fix, does a small photo now land?</li>
+<li>Can the <code>EAGAIN</code> bursts be reduced (socket send buffer, <code>txqueuelen</code>)? At what file
+size does the transfer give out?</li>
+<li>Would advertising more flag bits change what iOS sends?</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-13--observed-the-first-complete-airdrop-from-an-iphone-to-windfall"><span class="meta"><time datetime="2026-09-13">2026-09-13</time><span class="v ">OBSERVED</span><a class="perma" href="#2026-09-13--observed-the-first-complete-airdrop-from-an-iphone-to-windfall" aria-label="Link to this entry">#</a></span><span>the first complete AirDrop from an iPhone to Windfall</span></h4>
+<p>Same setup, with the receiver at <code>3bf2e92</code>.</p>
+<p><strong>Test 1, a 36 KB photo: success.</strong></p>
+<pre><code>'&lt;owner&gt;'s iPhone' (iPhone) wants to send:
+  IMG_xxxx.JPG  [public.jpeg]
+  preview: 48,870 bytes, Jpeg2000
+Accepted.
+  upload: dvzip, first bytes 0000002D789C
+  member . (directory)
+  member ./IMG_xxxx.JPG (36,454 bytes)
+</code></pre>
+<p>The 36,454-byte file opened correctly. That settles the first two questions above:</p>
+<ul>
+<li>
+<strong>iOS sends DVZip to a receiver that advertises it, and our reader has the framing
+right.</strong> <code>0000002D</code> is a 45-byte block length and <code>789C</code> is a zlib header. Our DVZip
+reader has now worked against Apple, not just against our own writer. The other
+direction, whether Apple can read <em>our</em> DVZip, is still untested.</li>
+<li>The root-member fix works.</li>
+<li>Blocks are not a fixed size. A 45-byte compressed block can only be the cpio header for
+<code>.</code>.</li>
+</ul>
+<p>The first attempt at Test 1 failed before any data moved
+(<code>Unable to write data to the transport connection</code>), while the phone was barely present
+on channel 6. With the phone touching the PC it worked.</p>
+<p><strong>Test 2, a photo iOS converted from HEIC: refused by our DVZip reader.</strong></p>
+<pre><code>  upload: dvzip, first bytes 0001FEF3789C
+Connection failed: Block of 2147614720 bytes exceeds the 16777216 byte limit.
+</code></pre>
+<p>2147614720 is <code>0x80020000</code>, and without bit 31 it is <code>0x20000</code>: exactly 128 KiB. Two
+readings of bit 31 were weighed:</p>
+<ul>
+<li>
+<strong>"More blocks follow."</strong> Refuted by Test 1. Its 45-byte first block was necessarily
+followed by more, yet <code>0000002D</code> has bit 31 clear.</li>
+<li>
+<strong>"Stored raw."</strong> Consistent with everything seen. The file was a JPEG, whose image
+data deflate cannot shrink, so a sender that stores incompressible blocks uncompressed
+would emit exactly a full 128 KiB raw block with a flag. Test 1's blocks never needed
+it.</li>
+</ul>
+<p><strong>Implemented: bit 31 marks a stored block.</strong> Its length is the low 31 bits, the 16 MiB
+limit applies to that length, and the bytes are copied through. This is a reading, not a
+confirmation. The receiver logs the first stored block's leading bytes and a per-upload
+count of zlib and stored blocks. Raw JPEG bytes there, and a file that opens, confirm it;
+<code>78 xx</code> there would refute it.</p>
+<p>Also seen in Test 2:</p>
+<ul>
+<li>
+<strong>iOS converted the photo.</strong> The file was named with a UUID
+(<code>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.JPG</code>) rather than <code>IMG_xxxx</code>, and arrived as
+JPEG. This fits a comment in opendrop's receiver: advertise no media capabilities and a
+receiver gets legacy formats. Our <code>/Discover</code> response advertises none either.</li>
+<li>
+<strong>"Declined" despite consent.</strong> Twice the phone showed "Declined" although <code>y</code> had been
+typed at the prompt. The likeliest explanation is <code>/Ask</code> timing out, or the link
+dropping, while waiting on a person; iOS would report either as a decline. Unverified.
+<code>receive --yes</code> removes the human delay and will separate the two.</li>
+</ul>
+<p><strong>Injection errors do not separate success from failure.</strong> Cumulative counts of
+<code>unable to inject packet</code>: 93 after a failed first attempt, 217 after the successful
+transfer (about 124 during it), and 327 after the failed large one (about 110 during it).
+The success had <em>more</em> errors than the failure. <code>EAGAIN</code> limits throughput; it did not
+cause Test 2 to fail. The <code>wmem</code> and <code>txqueuelen</code> experiments did not run, because OWL
+was never restarted into their log files, so there is no conclusion on either.</p>
+<p><strong>Operational:</strong> restarting OWL destroys and recreates <code>awdl0</code>. The receiver keeps its
+sockets on the old interface and drops out of the AirDrop row. Start OWL first and the
+receiver after it, every time.</p>
+</section>
+<h3 id="open-questions-4">Open questions</h3>
+<ol>
+<li>Does bit 31 mean stored? The next large transfer logs the first stored block.</li>
+<li>With that fix, does a 1–3 MB photo complete, and at what size does transfer give out?</li>
+<li>Do the "Declined" results persist with <code>--yes</code>?</li>
+<li>Do <code>wmem_default</code> or <code>txqueuelen</code> change the <code>EAGAIN</code> rate?</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-14--observed-stored-blocks-confirmed-179-mb-lands-video-does-not"><span class="meta"><time datetime="2026-09-14">2026-09-14</time><span class="v ">OBSERVED</span><a class="perma" href="#2026-09-14--observed-stored-blocks-confirmed-179-mb-lands-video-does-not" aria-label="Link to this entry">#</a></span><span>stored blocks confirmed; 1.79 MB lands, video does not</span></h4>
+<p>Receiver at <code>b1c99b0</code>, run with <code>--yes</code>, started after OWL, with the phone touching the PC.</p>
+<p><strong>Test A, a 1.79 MB PNG: success in about 1–2 minutes (roughly 15–25 KB/s).</strong></p>
+<pre><code>  preview: 29,641 bytes, Jpeg2000
+  upload: dvzip, first bytes 0001E3DE789C
+  dvzip: block 13 is stored (header 0x80020000), starts 54C38ADF2E2E2E59
+  dvzip: 15 block(s), 12 zlib, 3 stored
+  member . (directory)
+  member ./IMG_xxxx.PNG (1,793,230 bytes)
+</code></pre>
+<p>The 1,793,230-byte file opened intact. <strong>The stored-block reading is confirmed.</strong> Block 13
+begins <code>54 C3</code>, not a zlib header, and the archive decoded correctly. That fits the
+content: PNG image data is already deflate-compressed, which makes it exactly the kind of
+block a sender would store rather than recompress.</p>
+<p><strong>Test C, three items in one share: one arrived, then nothing.</strong></p>
+<pre><code>  preview: 68,940 bytes, Jpeg2000
+  upload: dvzip, first bytes 0001E895789C
+  dvzip: block 12 is stored (header 0x80001000), starts 33ACDE15FE7A534B
+  dvzip: 12 block(s), 11 zlib, 1 stored
+  member . (directory)
+  member ./FullSizeRender.heic (1,445,596 bytes)
+</code></pre>
+<ul>
+<li>
+<strong>A 4 KiB stored block (<code>0x80001000</code>).</strong> Stored blocks are not a fixed 128 KiB, so bit 31
+is a type flag and not a chunk-size marker.</li>
+<li>
+<strong>The order of these lines matters.</strong> The receiver decompresses the whole upload body
+into memory before extracting anything, and prints the <code>dvzip:</code> summary only once the
+body has ended cleanly. So iOS had already <em>finished</em> this <code>/Upload</code> body before either
+<code>member</code> line appeared, and that body held the first item and not the other two. The
+session read the stall as a transfer that "stopped before it resolved". But the CLI
+prints <code>Received …</code> only when the connection closes, so a connection left open looks
+exactly like that.</li>
+<li>
+<strong>Two explanations remain.</strong> Either iOS sends each item of a share as its own <code>/Upload</code>,
+or it ended the transfer early. If it is the first, the receiver is at fault: it accepts
+exactly one <code>/Upload</code> per accepted <code>/Ask</code>, and would have answered a second with <strong>401</strong>.
+That rule was not changed on a guess. The receiver now logs every request and its answer
+as they happen, and names a refused second upload explicitly, so the next multi-item
+share settles it.</li>
+<li>
+<strong>HEIC arrived unconverted.</strong> In session 3 the same phone converted a HEIC to JPEG under a
+UUID name; here it sent <code>FullSizeRender.heic</code> as HEIC. What decides this is open.
+<code>--yes</code> mode printed only a file count, which hid each item's type and the <code>/Ask</code>'s
+<code>ConvertMediaFormats</code>. It now prints both.</li>
+</ul>
+<p><strong>Test B, a short video (about 5–20 MB): failed, with nothing delivered.</strong> <code>/Ask</code> was
+accepted (43,331-byte preview). After that there was no <code>upload:</code> line in over ten
+minutes, only repeated read and write resets, while the phone showed "Sending". Injection
+errors rose from about 330 to 3,692 during the attempt, an order of magnitude more than
+the successful transfer produced. At 15–25 KB/s, 10 MB needs 7–11 minutes of unbroken
+link, and the overlap on channel 6 does not provide that. The receiver cannot help: the
+iPhone is the sender, and its retry behaviour is not ours to change. The levers are link
+quality and speed.</p>
+<p><strong><code>--yes</code> removed the "Declined" results entirely.</strong> Every transfer was accepted without a
+decline, which supports <code>/Ask</code> timing out while a person types. A GUI consent prompt faces
+the same clock, so the timeout is worth measuring before the prompt is designed around it.</p>
+<p><strong>Not run:</strong> the <code>wmem</code> and <code>txqueuelen</code> experiments. <strong>Not bracketed:</strong> where between
+1.8 MB and 5 MB a single file stops arriving.</p>
+</section>
+<h3 id="open-questions-5">Open questions</h3>
+<ol>
+<li>Does iOS send a multi-item share as one archive, or as several <code>/Upload</code> requests?</li>
+<li>What decides whether iOS converts HEIC, and does <code>ConvertMediaFormats</code> predict it?</li>
+<li>Where between 1.8 MB and 5 MB does a single file stop arriving?</li>
+<li>Do <code>wmem_default</code> or <code>txqueuelen</code> change transfer time or the <code>EAGAIN</code> rate?</li>
+<li>How long does iOS wait for an answer to <code>/Ask</code>?</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-16--observed-one-upload-for-many-files-eagain-exonerated-bigger-buffers-are-worse"><span class="meta"><time datetime="2026-09-16">2026-09-16</time><span class="v ">OBSERVED</span><a class="perma" href="#2026-09-16--observed-one-upload-for-many-files-eagain-exonerated-bigger-buffers-are-worse" aria-label="Link to this entry">#</a></span><span>one /Upload for many files; EAGAIN exonerated; bigger buffers are worse</span></h4>
+<p>Session 5, receiver at <code>dbe6120</code>, run with <code>--yes</code>, OWL on channel 6. The phone was on
+iOS 26.6; it has since updated to iOS 27, so everything here is 26.6.</p>
+<p><strong>A multi-item share is one archive.</strong> Three PNGs, 5,717,820 bytes:</p>
+<pre><code>08:08:49 request POST /Upload (chunked)
+08:11:13 dvzip: 44 block(s), 23 zlib, 21 stored
+08:11:13 member ./IMG_xxxx.PNG (2,029,799 bytes)
+08:11:13 member ./IMG_xxxx.PNG (2,228,664 bytes)
+08:11:13 member ./IMG_xxxx.PNG (1,459,357 bytes)
+08:11:13 upload complete: 3 file(s), 5,717,820 bytes -&gt; 200
+</code></pre>
+<p>One <code>/Ask</code> listing N files, one <code>/Upload</code> carrying one cpio archive with all N members. No
+second <code>/Upload</code> arrived and the 401 branch never fired, so the receiver's
+one-upload-per-<code>/Ask</code> rule matches what iOS does. The test pinning it stays, now as a
+guard against a peer appending an upload nobody agreed to.</p>
+<p><strong>Session 4's size ceiling does not exist.</strong> 5.7 MB arrived intact in 144 s, about
+40 KB/s, roughly twice the rate of the single 1.8 MB file. Whatever stops a video, it is
+not size.</p>
+<p><strong>Identical names lose files, on the phone's side.</strong> A share of three <em>edited</em> photos
+produced an <code>/Ask</code> listing three files all named <code>FullSizeRender.heic</code>, and an upload
+whose archive held a single member of 1,439,753 bytes across 12 blocks: one file's worth
+of data. The loss therefore happened before the archive was built, not in our extractor.
+Ours would have overwritten silently all the same, so a collision now becomes
+<code>name (2).ext</code> and is logged.</p>
+<p><strong>EAGAIN is not a failure predictor.</strong> 20,857 injection errors over 25 minutes, with the
+5.7 MB transfer succeeding inside that window. Session 4 saw about 330 during a success
+and 3,692 during a failure. OWL retries and the data gets through. Three sessions treated
+this as the prime suspect; it is not one.</p>
+<p><strong>Bigger socket buffers made it slower.</strong> The same three PNGs took 144 s at default
+buffers and 266 s with <code>net.core.wmem_default</code> and <code>wmem_max</code> at 4 MB, about 85% worse.
+Offered mechanism: a deeper send queue holds more frames than the channel-6 windows can
+drain, so loss is noticed later and retried later. Caveats: one run per configuration on a
+drifting link, and the 4 MB run needed three attempts. Keep the direction, not the number.
+<code>txqueuelen</code> was deliberately skipped rather than stacked on top of a change already
+pointing the wrong way. The experiment worth running is the opposite: buffers <em>below</em>
+default.</p>
+<p><strong><code>/Ask</code> takes 8 seconds to answer, and that is the real flakiness.</strong> Three exchanges took
+8 s each (08:08:38 to 46, 08:20:21 to 29, 08:20:50 to 58). The first went on to upload;
+the phone abandoned the other two. Identical latency, different outcomes, which puts us
+right on iOS's patience threshold. It is not the consent prompt: <code>--yes</code> was on
+throughout. It explains the "fails on the first tap, works on the second" pattern from
+earlier sessions.</p>
+<p>Where those 8 s go is now measured rather than guessed: the receiver times the <code>/Ask</code> body
+read, the consent decision and the reply separately. The body is the suspect, since iOS
+attaches a JPEG 2000 preview of 43 to 69 KB to every <code>/Ask</code>, and at early-connection rates
+that alone is seconds. If that is where the time goes, no change to our code helps; the
+lever is a TXT record that asks iOS for less, which <code>receive --flags &lt;hex&gt;</code> now makes
+testable.</p>
+</section>
+<h3 id="open-questions-6">Open questions</h3>
+<ol>
+<li>How much of the 8 s is reading the preview? Instrumented; the next session reads it off
+the log.</li>
+<li>Does advertising different flags change whether iOS attaches a preview, or its size?</li>
+<li>Do socket buffers <em>below</em> default beat 144 s for 5.7 MB?</li>
+<li>Why did three edited photos collapse into one archive member on the phone?</li>
+<li>What blocks video: duration, codec, or iOS's own transcode path?</li>
+<li>What does iOS 27 change? It is reported to make AirDrop up to 80% faster with no new
+restrictions, and every observation above predates it.</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-19--observed-the-ask-cost-is-the-preview-and-ios-27-tripled-it"><span class="meta"><time datetime="2026-09-19">2026-09-19</time><span class="v ">OBSERVED</span><a class="perma" href="#2026-09-19--observed-the-ask-cost-is-the-preview-and-ios-27-tripled-it" aria-label="Link to this entry">#</a></span><span>the /Ask cost is the preview, and iOS 27 tripled it</span></h4>
+<p>Session 6, receiver at <code>9280671</code>, phone on <strong>iOS 27.0</strong> (all earlier sessions were 26.6).
+The three-part <code>/Ask</code> timing settled where the seconds go:</p>
+<pre><code>17:52:21 /Ask body: 131,746 bytes read in 10,522 ms
+  IMG_xxxx.WEBP  [org.webmproject.webp]
+  preview: 127,286 bytes, Jpeg2000
+17:52:21 -&gt; 200 accepted (body 10,522 ms, consent 1 ms, reply 0 ms, total 10,531 ms)
+...
+17:56:23 /Ask body: 201,469 bytes read in 17,269 ms
+  preview: 196,962 bytes, Jpeg2000
+17:56:23 -&gt; 200 accepted (body 17,269 ms, consent 0 ms, reply 0 ms, total 17,270 ms)
+</code></pre>
+<p>Consent and reply are 0–1 ms. The entire <code>/Ask</code> cost is receiving the body, and the body is
+~97% preview image (127,286 of 131,746; 196,962 of 201,469). <strong>Our code contributes nothing
+measurable.</strong> Every tap this session was declined by the phone: at 10–19 s we are past its
+patience.</p>
+<p><strong>iOS 27 made it worse, not better.</strong> On 26.6 previews were 30–70 KB and <code>/Ask</code> took ~8 s;
+on 27.0 they are 127–215 KB and <code>/Ask</code> takes 10–19 s. Whatever iOS 27 speeds up
+Apple-to-Apple, the larger preview is a straight loss on a ~20 KB/s link.</p>
+<p><strong>Capability flags do not control the preview.</strong> With <code>--flags 0x02</code> the preview was still
+210,808 bytes (19,491 ms total). With <code>--flags 0</code>, <code>kali</code> still appeared (mDNS ignores
+flags) and <code>/Discover</code> was answered, but iOS never sent an <code>/Ask</code> at all — so the flags gate
+the handshake but not the preview size. This matches the protocol: the only receiver-side
+negotiation in <code>/Discover</code> is <code>ReceiverMediaCapabilities</code>, which governs file-format
+conversion (hence <code>convert media formats: no</code> throughout), not the icon. iOS also sent a
+<code>.WEBP</code> natively — iOS 27 ships WebP without transcoding.</p>
+<p><strong>Why neither proposed fix works as first framed.</strong></p>
+<ul>
+<li>
+<em>Parse the metadata, reply early, drain the preview.</em> Impossible with this wire format. A
+binary plist is unreadable until its final 32-byte trailer, which points to the offset
+table; the <code>FileIcon</code> blob sits in the object region before it. The metadata cannot be
+reached without first receiving the whole preview, and the bytes cross the slow link
+whenever we reply.</li>
+<li>
+<em>Ask iOS for no preview.</em> No protocol expresses it. The sender decides <code>FileIcon</code>
+unilaterally from the file type; there is no receiver key to suppress it.</li>
+</ul>
+<p><strong>The one real lever, now testable.</strong> RFC 9110 lets a client stop uploading a body once it
+sees a final response. If CFNetwork honours that, an early <code>200</code> on <code>/Ask</code> could make iOS
+abandon the preview mid-upload. <code>receive --early-ask</code> (option <code>EarlyAskReply</code>) tests it: it
+answers 200 before reading the body, then times what iOS does with the body. A full body
+still arriving in ~10–19 s means iOS ignored it and the bottleneck is the link, full stop; a
+fast or absent body means a real fix exists. It accepts sight-unseen, so it is a measurement
+tool under <code>--yes</code>, never the product path. Verified locally that switching it on does not
+break a normal transfer (our sender writes the whole body before reading the reply, the same
+as an iOS that ignores the early 200).</p>
+<p>If iOS ignores it, the honest conclusion is that image AirDrop over this card is
+link-bound: the durable fix is transmitting on channel 44 (where the phone spends most of
+its time) rather than channel 6, which needs different hardware or a way past the AX211's
+self-managed 5 GHz rules. Non-image shares, which carry no preview, are unaffected and
+should already be fast.</p>
+</section>
+<h3 id="open-questions-7">Open questions</h3>
+<ol>
+<li>Does iOS stop sending the preview when <code>--early-ask</code> replies 200 first? The measurement
+this session runs.</li>
+<li>If it does, what is the smallest change that keeps a real consent prompt — accept, then
+read the body for display, then let iOS proceed?</li>
+<li>What is the 5.7 MB baseline on iOS 27 at default buffers (the 144 s figure was 26.6)?</li>
+<li>Do below-default socket buffers beat that baseline?</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-20--confirmed-answering-ask-first-fixes-the-declines-the-link-is-the-rest"><span class="meta"><time datetime="2026-09-20">2026-09-20</time><span class="v yes">CONFIRMED</span><a class="perma" href="#2026-09-20--confirmed-answering-ask-first-fixes-the-declines-the-link-is-the-rest" aria-label="Link to this entry">#</a></span><span>answering /Ask first fixes the declines; the link is the rest</span></h4>
+<p>Session 7, receiver at <code>8a96074</code>, phone on iOS 27.0, <code>--early-ask --yes</code>.</p>
+<p><strong>The experiment worked, but not by the mechanism it was built to test.</strong> iOS sent the
+complete /Ask body every time (47,847 / 49,806 / 14,128 bytes), so it does not take RFC
+9110's option to stop uploading after a final response. The preview is never skipped. What
+the early 200 does is stop iOS's timer, which runs on the <strong>/Ask round trip</strong>: an answer
+that waits for the body lands too late. Three taps out of three cleared the handshake,
+including one whose body took 8,323 ms — squarely in the range that was declined every
+single time in session 6.</p>
+<pre><code>11:37:14 request POST /Ask (chunked)
+11:37:14 early-ask: replying 200 before reading the body
+11:37:22 early-ask: full body of 49,806 bytes still arrived 8,323 ms after the early reply
+11:37:22 request POST /Upload (chunked)
+11:41:05 dvzip: 30 block(s), 15 zlib, 15 stored
+11:41:05 member ./IMG_xxxx.PNG (3,627,446 bytes)
+11:41:05 upload complete: 1 file(s), 3,627,446 bytes -&gt; 200
+</code></pre>
+<p><strong>New record: 3,627,446 bytes, intact, in 223 s (~16 KB/s).</strong> A ~25.6 MB item died one
+second into /Upload with nothing delivered, and with a ~40 MB image selected the receiver
+stopped appearing in the AirDrop row at all — iOS gives up before reaching us.</p>
+<p><strong>Consent had to move rather than vanish.</strong> The 200 only tells the sender to proceed; what
+matters is whether bytes are written. The receiver now answers /Ask first, runs the prompt
+<em>while the upload streams in</em>, and extracts only if it is granted — a refusal discards the
+buffer, answers 401 and leaves nothing on disk. The cost, recorded plainly: an unapproved
+sender can make us receive and buffer an upload before anyone agrees to it. Default is
+still off pending a decision on whether that trade is acceptable for the product.</p>
+<p><strong>The remaining blocker is channel overlap, and it is not a software problem.</strong> OWL logged
+the phone's sequence directly:</p>
+<pre><code>11:47:12 peer changed channel sequence to 149,149,149,149,149,149,0,0,6,149,149,149,149,149,0,0
+11:47:51 peer changed channel sequence to 149,0,149,0,0,0,0,0,6,6,149,0,0,0,0,0
+</code></pre>
+<p>Almost all 149, dipping to 6 briefly. The AX211 may only transmit on 6. Throughput measured
+15 KB/s, then 6 KB/s, then ~16 KB/s sustained, then collapse — degrading across the session.</p>
+<p><strong>Hypothesis worth testing before buying anything: the phone follows its infrastructure
+channel.</strong> Session 5 saw "mostly 44", session 7 "almost exclusively 149". Apple devices fold
+the channel of the Wi-Fi network they are joined to into the AWDL sequence, so a single
+radio can serve both. If that is what is happening, the sequence is tracking the router's
+5 GHz channel, and joining the phone to a <strong>2.4 GHz</strong> network should pull the sequence onto
+channel 6, where this card can actually transmit. Free to test: a 2.4 GHz-only SSID, a
+hotspot from another device, or Wi-Fi off entirely to see what AWDL falls back to. If it
+works, it changes the project's ceiling without new hardware.</p>
+</section>
+<h3 id="open-questions-8">Open questions</h3>
+<ol>
+<li>Does the phone's AWDL sequence follow its infrastructure Wi-Fi channel? Joining it to
+2.4 GHz is the test.</li>
+<li>Should early-ask be the default, given it buffers an unapproved upload?</li>
+<li>iOS 27 baselines at default buffers, taken early in a session while the link is fresh:
+1.8 MB and 5.7 MB.</li>
+<li>Where between 3.6 MB and 25 MB does a single file stop arriving?</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-20--refuted-the-phone-does-not-follow-its-wi-fi-channel-far-enough-to-matter"><span class="meta"><time datetime="2026-09-20">2026-09-20</time><span class="v nope">REFUTED</span><a class="perma" href="#2026-09-20--refuted-the-phone-does-not-follow-its-wi-fi-channel-far-enough-to-matter" aria-label="Link to this entry">#</a></span><span>the phone does not follow its Wi-Fi channel far enough to matter</span></h4>
+<p>Session 8, receiver at <code>702c4e7</code>, phone on iOS 27.0. The hypothesis was that joining the
+phone to a 2.4 GHz network would pull its AWDL sequence onto channel 6.</p>
+<p><strong>The mechanism is real and was confirmed twice.</strong> With the phone moved to a 2.4 GHz SSID,
+149 disappeared and an 11 appeared — channel 11 being what the router had auto-selected:</p>
+<pre><code>20:06:01 peer changed channel sequence to 44,44,44,44,44,44,0,0,6,44,44,44,44,44,0,0
+20:06:12 peer changed channel sequence to 11,0,44,0,0,0,0,0,6,0,44,0,0,0,0,0
+</code></pre>
+<p>Pinning the router's 2.4 GHz band to channel 6 then made the 11 vanish, so the phone was
+tracking the router move. <strong>But the 44s never budged</strong>: one channel-6 slot in sixteen,
+before and after. A transfer under the pinned condition reached DVZip block 13 in two
+minutes and then died, identical to session 7. The avenue is closed: no home-network
+configuration brings this phone onto channel 6 often enough to matter.</p>
+<p><strong>Three Apple devices were in range, and the other two sat on channel 6</strong> — one advertising
+all sixteen slots there. Full channel-6 commitment is clearly possible for an Apple device;
+it is just not what a 5 GHz-capable phone does. Peer MACs and UUIDs rotate every few
+minutes, so identity cannot be tracked by MAC across a session; attribution here rests on
+which peer was active during the transfer, and on the fact that a peer sharing one slot in
+sixteen is the only one that produces a two-minute crawl.</p>
+<p><strong>What the refutation leaves is a better target, from our own regulatory readings.</strong>
+Session 6 recorded the AX211's flags once disconnected: 149 passive/no-IR, 44
+<strong>IR-CONCURRENT</strong>, 6 unrestricted. Every session since has used 6 because it needed no
+condition. But IR-CONCURRENT is a condition that can be met: the card may transmit on 44
+while it holds a concurrent connection on that channel — and 44 is precisely where the
+phone spends fifteen of sixteen slots. 149 is not worth pursuing separately: in ETSI
+countries 5745 MHz is not available for this, which is what its no-IR flag reports.</p>
+<p>So the experiment that was never run is: put the router's 5 GHz band on channel 44, join
+Kali to it as an ordinary station, add a <strong>monitor interface beside the station</strong> rather
+than converting it, and run OWL on channel 44 with <code>-N</code>. <code>tools/owl-concurrent.sh</code> does
+this, and deliberately does not kill NetworkManager, since the association is the point.</p>
+<p>It turns on one unknown: whether <code>iwlmvm</code> permits a monitor interface concurrently with a
+managed one. The script prints the card's valid interface combinations before trying, so
+the answer is legible either way. If the card refuses, hardware is the answer and this is
+the last free idea; if it accepts, the overlap goes from one slot in sixteen to fifteen.</p>
+</section>
+<h3 id="open-questions-9">Open questions</h3>
+<ol>
+<li>Does this card allow monitor alongside managed, and does IR-CONCURRENT then permit
+injection on 44?</li>
+<li>iOS 27 baselines at default buffers, taken early while the link is fresh: 1.8 MB, 5.7 MB.
+Outstanding for three sessions.</li>
+<li>Where between 3.6 MB and 25 MB does a single file stop arriving?</li>
+<li>Should early-ask be the default, given it buffers an unapproved upload?</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-21--refuted-a-concurrent-link-on-44-gives-transmit-not-receive"><span class="meta"><time datetime="2026-09-21">2026-09-21</time><span class="v nope">REFUTED</span><a class="perma" href="#2026-09-21--refuted-a-concurrent-link-on-44-gives-transmit-not-receive" aria-label="Link to this entry">#</a></span><span>a concurrent link on 44 gives transmit, not receive</span></h4>
+<p>Session 9, receiver at <code>5400d1e</code>, phone on iOS 27.0, router's 5 GHz band fixed on channel
+44 at 80 MHz, Kali associated to it throughout.</p>
+<p><strong>The card half-accepted.</strong> <code>mon0</code> was created beside <code>wlan0</code> without error, although the
+card's valid interface combinations do not list monitor at all. OWL reported
+<code>Channel 44 [5220 MHz] is available for frame injection</code>, a first for this project. No
+peer was ever added, where channel 6 finds one within a second.</p>
+<p><strong>Transmit worked; receive was filtered.</strong> <code>tcpdump -i mon0 -e</code> showed only our own
+injected frames, ~27/s, under AWDL's fixed BSSID <code>00:25:00:ff:94:73</code>. No other device
+appeared, and no router beacon, though ~11 were due in the window. A second monitor
+interface made with <code>flags otherbss control</code> did receive real traffic. But it was only data
+frames inside our own BSSID, plus two protected action frames between us and the router,
+and still no beacons across 5.5 s. While associated, the firmware delivers to a monitor
+interface only what the station itself would accept. AWDL is almost entirely broadcast
+action frames under a foreign BSSID, exactly the category dropped. <code>otherbss</code> does not
+override it. Transmit without receive is useless, so this route is closed on the AX211.</p>
+<p><strong>The card does not recover cleanly.</strong> Afterwards, plain channel-6 monitor mode, which
+worked in every earlier session, heard only our own transmissions. <code>iw dev wlan0 info</code>
+showed 40 MHz wide at center 2447 where every earlier session ran 20 MHz; <code>set channel 6 HT20</code> fixed the width but not the deafness. Only reloading the driver restored reception
+(<code>modprobe -r iwlmvm iwlwifi</code>, then <code>modprobe iwlwifi</code>), after which peers appeared at
+once. The reload also corrupted the desktop display, though terminals stayed usable.</p>
+<p><strong>The iOS 27 channel-6 baseline, at last:</strong> one PNG of 1,333,114 bytes in <strong>83 s, ≈16 KB/s</strong>
+from <code>request POST /Upload</code> to <code>upload complete</code>. That matches iOS 26.6, so iOS 27 changed
+nothing measurable here. All three <code>/Ask</code> bodies were 39,316 bytes and took 4.9–5.8 s, and
+early-ask carried every one of them, with no declines.</p>
+<p><strong>Two failed attempts and a failed two-photo share all died after <code>block 13 is stored</code>.</strong>
+That is not the decoder. The line is logged only once the whole 128 KiB block has been read
+(<a href="https://github.com/UvejsGj/Windfall/blob/main/src/Windfall.Protocol/Compression/DvZip.cs">DvZip.cs</a>), so block 13 arrived and the
+link died later. Stored blocks were already proven by a 1.79 MB PNG with three of them. One
+inconsistency to settle next time: the successful attempt had 12 blocks, so the failed ones
+cannot have been byte-identical uploads of the same file, as the report believed.</p>
+<p><strong>The finding that matters is a channel sequence taken during the successful transfer:</strong></p>
+<pre><code>19:40:29 peer changed channel sequence to 6,6,6,6,6,6,44,44,6,6,6,6,6,6,44,44
+</code></pre>
+<p>Twelve slots in sixteen on our channel, against one in sixteen in sessions 7 and 8, and
+the rate did not move: 16 KB/s, the same crawl. Session 5 reached ~40 KB/s with the phone
+mostly on 44. If this peer was the phone (it was the active one, but MACs rotate), then
+<strong>channel overlap is not what limits throughput.</strong> That undercuts the reasoning behind
+this session's experiment, and behind any plan to get more overlap.</p>
+<p><strong>The better-fitting explanation is active monitor mode.</strong> OWL asks for it, and the AX211
+refuses it (<code>owl-session.sh</code> exists to work around that). In plain monitor mode the card
+receives the phone's unicast frames but never acknowledges them. The phone then counts
+every frame as lost, retries it up to its limit, and adapts its rate downward. The data
+still arrives, since we heard the first copy, but at a rate set by a link the phone
+believes is failing. That predicts a slow rate largely independent of overlap, which is
+what this session shows. It is testable without new hardware: frames the phone retries
+carry the 802.11 Retry bit, so a passive capture during a transfer shows how many are
+repeats.</p>
+<p><strong>Early-ask is now the default,</strong> with one change of design first. The first version read
+and inflated the upload while the prompt was open, deciding only before the write. As a
+default that would let any stranger fill our memory with an archive of any size, once per
+parallel connection in the app. <code>/Upload</code> now waits for the decision before reading a
+byte. An unapproved sender gets only the <code>/Ask</code> body it already had to send, and TCP holds
+the rest back. A test pins the order: it fails against the old receiver, whose log shows
+the upload inflated before <code>consent given</code>.</p>
+</section>
+<h3 id="open-questions-10">Open questions</h3>
+<ol>
+<li>How many of the phone's frames carry the Retry bit during a transfer? If most do, the
+missing acknowledgements are the throughput limit, and only a card with active monitor
+mode fixes it.</li>
+<li>How long does iOS tolerate an upload held back by TCP while a person decides? Every field
+session so far auto-accepted with <code>--yes</code>, so none has waited. Run once without <code>--yes</code>
+and answer after about 10, 30 and 60 s.</li>
+<li>The iOS 27 multi-file baseline (~5.7 MB) is still owed.</li>
+<li>Where between 3.6 MB and 25 MB does a single file stop arriving?</li>
+<li>Sending <strong>to</strong> an iPhone has never been tried.</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-09-22--confirmed-the-phone-is-never-acknowledged-and-resends-every-frame-7-times"><span class="meta"><time datetime="2026-09-22">2026-09-22</time><span class="v yes">CONFIRMED</span><a class="perma" href="#2026-09-22--confirmed-the-phone-is-never-acknowledged-and-resends-every-frame-7-times" aria-label="Link to this entry">#</a></span><span>the phone is never acknowledged, and resends every frame ~7 times</span></h4>
+<p>Session 10, receiver at <code>0f651d6</code>, iPhone 13 Pro Max on iOS 27.0, router as in session 9,
+OWL on channel 6. The first session to measure the missing-ACK explanation rather than
+infer it, with <code>tools/retry-capture.sh</code>, and the first to run the streaming receiver
+against a real phone.</p>
+<p><strong>Six captures, one answer.</strong> Each ran for the length of a transfer attempt. tcpdump
+reported <code>link-type IEEE802_11_RADIO</code> and <strong>0 dropped by kernel</strong> every time, so the counts
+saw every frame the card delivered. Only one transmitter sent data frames to us each time:
+the phone.</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Run</th>
+<th>Width</th>
+<th>Transfer</th>
+<th>Frames to us</th>
+<th>Retry bit</th>
+<th>Distinct seq</th>
+<th>Copies per frame</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>40 MHz</td>
+<td>/Discover only</td>
+<td>2,060</td>
+<td>86%</td>
+<td>246</td>
+<td>8.4</td>
+</tr>
+<tr>
+<td>2</td>
+<td>40 MHz</td>
+<td>failed</td>
+<td>5,526</td>
+<td>86%</td>
+<td>819</td>
+<td>6.7</td>
+</tr>
+<tr>
+<td>3</td>
+<td>40 MHz</td>
+<td>failed</td>
+<td>5,387</td>
+<td>86%</td>
+<td>789</td>
+<td>6.8</td>
+</tr>
+<tr>
+<td>4</td>
+<td>40 MHz</td>
+<td>failed</td>
+<td>9,205</td>
+<td>86%</td>
+<td>1,342</td>
+<td>6.9</td>
+</tr>
+<tr>
+<td>5</td>
+<td>20 MHz</td>
+<td>success, 102 s</td>
+<td>8,695</td>
+<td>86%</td>
+<td>1,304</td>
+<td>6.7</td>
+</tr>
+<tr>
+<td>6</td>
+<td>20 MHz</td>
+<td>failed on file 4 of 4</td>
+<td>11,101</td>
+<td>86%</td>
+<td>1,573</td>
+<td>7.1</td>
+</tr>
+</tbody>
+</table></div>
+<p>Identical at both widths, in successes and failures. About 86% of the phone's frames to us
+are resends, and each frame is sent about seven times: once, then again until the phone's
+retry limit, because no acknowledgement ever comes back. That is the signature of a
+receiver that hears but never acknowledges. It is what plain monitor mode produces, and it
+explains why no configuration change in nine sessions moved the rate. <strong>The throughput
+ceiling is the missing acknowledgements, and only a card with active monitor mode removes
+it.</strong> On this hardware, ~20 KB/s is the answer, not a bug to chase.</p>
+<p><strong>Width: the card ran at 40 MHz on every start.</strong> <code>iw dev wlan0 info</code> showed HT40+ at
+center 2447 after each OWL start (07:55, 07:57, 08:00), including after two driver
+reloads, although <code>owl-session.sh</code> set the channel without HT40. <code>set channel 6 HT20</code> with
+OWL already running fixed it, and it held for the rest of the session. Transfers: <strong>0 of 6
+at 40 MHz</strong> (T1–T6, one on the pre-streaming receiver, which failed the same way), then the
+first three attempts at 20 MHz succeeded (T7, T8, T10; T9 is below). But six in a row failed
+later at 20 MHz, so the width is not the whole story. It was free to rule out, so
+<code>owl-session.sh</code> now sets HT20 again five seconds after OWL starts and prints the width it
+ended up with. At 20 MHz uploads ran at <strong>21–27 KB/s</strong>, against 16 KB/s in session 9.</p>
+<p><strong>New record: 6,379,673 bytes, four HEICs, in 267 s</strong> (T10, ~24 KB/s). The upload was 50
+DVZip blocks, 27 zlib and 23 stored, all decoded intact. The same share failed once before
+(T9) while the laptop screen had blanked; the retry kept both screens awake. Two things
+changed at once, so the screen is not proven, but <code>owl-session.sh</code> now keeps it awake too.</p>
+<p><strong>The streaming receiver behaved as designed on a real phone.</strong> After every checked
+failure, <code>/tmp/rx</code> had no new file and no <code>.windfall-incoming-…</code> folder. The directory's
+timestamp moved at each failure, showing the folder was created and then removed. T9 is the
+decisive case: three of its four files had fully arrived when the fourth failed, and none
+was kept. After every success, every file was present at its exact byte count. That
+all-or-nothing rule is deliberately kept, even though it discarded three good photos in T9.
+The phone reported the share as failed, so the person sends it again, as happened with T10.
+Had T9's three been kept, T10 would have left <code>IMG_xxxx (2).HEIC</code> beside each of them.</p>
+<p><strong>Consent gating works on a device:</strong> in T12 the upload was not read until the prompt was
+answered, about 14 s later, and the transfer then proceeded. Both prompt runs failed later,
+but so did the <code>--yes</code> controls run straight after them. The 30 s, 60 s and decline cases
+were not run.</p>
+<p><strong>Unexplained: six failures in a row after 09:16</strong>, even for 239 KB files, with the prompt
+or <code>--yes</code>. Neither turning the phone's Wi-Fi off and on nor a full restart of the laptop
+side (driver reload, OWL, HT20, receiver) cleared it. The width stayed 20 MHz, and <code>/tmp</code> was
+3% used. OWL's per-minute send-error counts, which rise and fall with traffic, stayed at the
+level the <code>/Ask</code> exchange alone produces, so those uploads stalled almost at once. Three or
+four other Apple devices joined and left the AWDL cluster all session, and the election
+leader moved between the phone and them. That is the one variable nothing controlled. A
+full restart of the phone was not tried.</p>
+<p><strong>Smaller observations:</strong></p>
+<ul>
+<li>When an upload dies part-way, the phone reports <strong>"Declined"</strong>, even though the receiver
+had accepted. So a "Declined" on the phone does not mean a refusal.</li>
+<li>The phone's AWDL sequence cycles 12/16 → 6/16 → 4/16 slots on channel 6 within about
+5 s of each transfer starting, the same in successes and failures. At rest it is 4/16.</li>
+<li>A 36.1 MB ProRAW original arrived as a 2,469,203-byte JPEG at full resolution, with EXIF
+and a lowercase <code>.jpg</code>, although every <code>/Ask</code> said <code>convert media formats: no</code>. HEICs
+arrived as HEIC. So iOS converts ProRAW by itself, whatever the receiver advertises.</li>
+<li>At 40 MHz the first <code>/Ask</code> was reset mid-body twice (T1, T2); later ones completed.</li>
+<li>The first upload bytes were <code>0000002D789C</code> in every success. Failures showed both
+that and <code>0001xxxx789C</code>, so the opening block does not predict the outcome.</li>
+</ul>
+</section>
+<h3 id="open-questions-11">Open questions</h3>
+<ol>
+<li>What stops the late-session transfers? Test with any Apple devices of your own switched
+off or away, and try a full restart of the phone when failures start to cluster.</li>
+<li>The consent wait at 30 s and 60 s, and what the phone shows on a real decline.</li>
+<li>Where between 6.4 MB and ~25 MB does a transfer stop arriving?</li>
+<li>Sending <strong>to</strong> an iPhone has never been tried.</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-10-06--session-11-nothing-arrived-at-a-new-location-which-rules-several-causes-out"><span class="meta"><time datetime="2026-10-06">2026-10-06</time><span class="v ">SESSION 11</span><a class="perma" href="#2026-10-06--session-11-nothing-arrived-at-a-new-location-which-rules-several-causes-out" aria-label="Link to this entry">#</a></span><span>nothing arrived at a new location, which rules several causes out</span></h4>
+<p>Session 11, receiver at <code>ba8541e</code>, iOS 27.0, at a <strong>different location and router</strong> from
+sessions 9 and 10. The router's 5 GHz band was on channel 153 at -75 dBm; channel 44 was not
+available. The phone was restarted at the start, and the tester's own Apple devices were
+switched off. Only one AWDL peer, the phone, appeared all session. The width line read 20 MHz
+on both OWL starts.</p>
+<p><strong>Zero of five uploads succeeded</strong>, four with <code>--yes</code> and one after the prompt. Every failure
+ended <code>Connection closed before a chunk header</code>, and the phone showed "Declined". No
+<code>upload complete</code> all session. <code>/tmp/rx</code> was empty afterwards, with no staging folder left.</p>
+<p><strong><code>/Ask</code> always got through, seven times of seven, but slowly:</strong> 50 KB in about 4 s and 90 KB
+in 9 to 21 s, roughly 4 to 13 KB/s, against 20 to 27 KB/s at session 10's location. A 97 KB
+upload then failed where 90 KB <code>/Ask</code> bodies had arrived, so size is not the cause.</p>
+<p><strong>What this rules out.</strong> The failures began with the first send, with one peer and a freshly
+restarted phone. So neither other Apple devices, nor phone state, nor time into the session
+explains them, which were the leading suspects for session 10's late failures. A driver
+reload was needed before the phone appeared at all (as in session 9), and was done minutes
+before the first send.</p>
+<p><strong>What it does not settle.</strong> The location changed, and the link was plainly worse there. The
+code changed too, but only in how names are displayed and saved, and session 10's own late
+failures happened on the code before that. OWL's per-minute send errors came in bursts that
+coincided with failures, but they do not separate failure from success: session 10's
+successful minutes had several thousand each, more than this session's total of 1,111 for
+two sends. They track traffic. The decisive test is the current code at session 10's
+location: working there points at the location, failing there points at something else.</p>
+<p><strong>Consent, still unmeasured.</strong> With the prompt answered after about 20 s, no <code>/Upload</code>
+followed, only a series of connection resets, and the phone showed "Sending" throughout.
+After a decline, the phone's <code>/Upload</code> was logged and then the link failed, as uploads
+were failing anyway. Neither says anything about waiting or declining while the link
+itself was failing.</p>
+<p><strong>Found and fixed: the stopped receiver lingered on the phone.</strong> The phone listed two
+receivers, both shown as "kali", and only the second was alive. Stopping the receiver
+withdrew nothing; it fell silent, and peers kept its records until they expired. Each start
+picks a new random instance name, so every restart added an entry. The receiver now sends an
+mDNS goodbye on stop: the same service records with a TTL of zero (RFC 6762, section 10.1),
+twice, time-boxed so it cannot hold up a shutdown. Keeping the name the same across
+restarts would also have hidden the duplicates, but a name that never changes is a
+tracking identifier, which is why Apple's devices randomise theirs. The goodbye travels over
+awdl0, so <strong>stop the receiver before OWL</strong>, or it cannot get out.</p>
+<p><strong>Smaller observations:</strong></p>
+<ul>
+<li>Every <code>/Discover</code> connection ended in a reset from the phone. Session 10 showed the same.</li>
+<li>The phone's AWDL sequence held channel 6 for 2 to 4 of 16 slots at rest and all 16 during
+transfers, including during a failure.</li>
+<li>A 2.4 GHz scan at the end found four networks, on 2412, 2437, 2452 and 2457 MHz.</li>
+</ul>
+</section>
+<h3 id="open-questions-12">Open questions</h3>
+<ol>
+<li>Do transfers work again at session 10's location, with the current code? If they do, the
+location is the variable; if not, compare session 10's build (<code>0f651d6</code>) side by side.</li>
+<li>The consent wait at 30 s and 60 s, and what the phone shows on a real decline. Needs a
+link that works first.</li>
+<li>Where between 6.4 MB and ~25 MB does a transfer stop arriving?</li>
+<li>Sending <strong>to</strong> an iPhone has never been tried.</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-10-07--session-12-the-code-is-ruled-out-three-receiver-faults-found-and-fixed"><span class="meta"><time datetime="2026-10-07">2026-10-07</time><span class="v ">SESSION 12</span><a class="perma" href="#2026-10-07--session-12-the-code-is-ruled-out-three-receiver-faults-found-and-fixed" aria-label="Link to this entry">#</a></span><span>the code is ruled out; three receiver faults found and fixed</span></h4>
+<p>Session 12 ran at <strong>session 11's place again</strong>; the planned return to session 10's location
+did not happen. Current build <code>49c229b</code>, and session 10's build <code>0f651d6</code> side by side. iOS
+27.0; the phone was joined to a 5 GHz network on channel 153. A scan found one strong network
+on channel 8 (signal 72), which overlaps channel 6. The phone has since been updated to iOS
+27.0.1, so later sessions differ from this one in that too.</p>
+<p><strong>Zero of twelve sends arrived</strong>: five on the current build, four on session 10's, and three
+extra. <strong>Session 10's own build failed exactly as the current one did</strong>, so the code changed
+since session 10 is not what stops transfers here. Two failure shapes:</p>
+<ul>
+<li>Nine reached <code>/Upload</code> and ended <code>Connection closed before a chunk header</code>, about 10 to
+20 s in, each alongside a burst of OWL's send errors.</li>
+<li>Three never reached <code>/Ask</code>. <code>/Discover</code> was answered, the phone reset that connection, and
+its next connection died during the TLS handshake (<code>unexpected EOF</code>).</li>
+</ul>
+<p>With the phone's Wi-Fi switched off, its AWDL sequence held channel 6 in all sixteen slots,
+which it never did while joined, and the send still failed. So the phone dividing its time
+with its own network is not the cause either. An attempt to run OWL on channel 44 was refused
+by the card's regulatory flags (no-IR there). That is the card's limit, and it is not
+something to try again.</p>
+<p><strong>The goodbye works on a real phone.</strong> Stopping the receiver with OWL still running removed
+the laptop from the phone's AirDrop list instantly, and a restart left one entry. Two
+entries appeared only with session 10's build, which predates the goodbye.</p>
+<p><strong>Three receiver faults the session surfaced, now fixed:</strong></p>
+<ol>
+<li>
+<strong>The laptop vanished from the AirDrop list while both sides were up.</strong> The receiver
+answered only the browse question for <code>_airdrop._tcp.local</code>. Having found a receiver, a
+peer resolves it with questions about the instance's SRV and TXT and the host's address,
+and keeps cached records alive by asking for each again before its TTL runs out (RFC 6762,
+section 5.2). None was answered, so the records expired on the phone after 120 s. Both
+transports now answer any question about a record they announce. They also announce twice,
+a second apart, at start, as section 8.3 requires; a single announcement was easily lost.</li>
+<li>
+<strong>Every <code>/Discover</code> looked like a failure.</strong> iOS ends connections with a reset, not a
+close, and the CLI printed each one as <code>Connection failed</code>. That put a line identical to
+a real failure after every successful exchange. A reset between requests now logs
+<code>connection reset by peer between requests</code> and ends the connection normally. A reset
+inside a request is still an error, so the real pre-<code>/Ask</code> failures stand out.</li>
+<li>
+<strong>A saved transfer could be reported as failed.</strong> Files are moved into place before the
+final 200 is written, but if the phone hung up in that moment the exception discarded the
+result. The receiver now logs <code>saved, but the peer was gone before the 200 reached it</code> and
+reports the transfer.</li>
+</ol>
+<p><strong>The driver reload is now automatic.</strong> Sessions 9, 11 and 12 all found no peer until it was
+done by hand. <code>owl-session.sh</code> now reloads the driver before every start; <code>RELOAD=0</code> skips it.</p>
+</section>
+<h3 id="open-questions-13">Open questions</h3>
+<ol>
+<li>Do transfers work at session 10's location with the current code and iOS 27.0.1? If they
+do, the location was the variable. If not, the location and the iOS update cannot be told
+apart.</li>
+<li>Does the laptop now stay in the phone's AirDrop list while idle?</li>
+<li>The consent wait at 30 s and 60 s, and what the phone shows on a real decline.</li>
+<li>Where between 6.4 MB and ~25 MB does a transfer stop arriving?</li>
+<li>Sending <strong>to</strong> an iPhone has never been tried.</li>
+</ol>
+<section class="entry flow">
+<h4 class="eh" id="2026-10-08--session-13-transfers-work-again-at-the-same-place-the-decline-was-too-slow"><span class="meta"><time datetime="2026-10-08">2026-10-08</time><span class="v ">SESSION 13</span><a class="perma" href="#2026-10-08--session-13-transfers-work-again-at-the-same-place-the-decline-was-too-slow" aria-label="Link to this entry">#</a></span><span>transfers work again at the same place; the decline was too slow</span></h4>
+<p>Session 13 ran at <strong>session 11 and 12's place</strong> again, so the return to session 10's location
+is still untested. Commit <code>151eee6</code>, iOS <strong>27.0.1</strong>. The tester's own Apple devices were off and
+the phone was restarted. <code>owl-session.sh</code> reloaded the driver itself, the phone appeared 14 s
+after OWL started, and the width was 20 MHz without help. The scan showed the channel-8
+network at signal 64, against 72 in session 12.</p>
+<p><strong>Three of ten uploads arrived</strong>, where sessions 11 and 12 got none of seventeen at the same
+place. Each was the same 203,596-byte JPEG, and each success took 13 to 17 s from <code>/Upload</code>
+to <code>upload complete</code>. Since session 12, three things changed: iOS 27.0.1, the receiver
+fixes in <code>151eee6</code>, and the automatic driver reload. It was also past midnight, and the
+neighbouring network was a little weaker. Nothing here separates them. The mDNS fix is the
+least likely cause, since an upload runs on one connection that mDNS no longer touches.</p>
+<p><strong>One shape for every upload.</strong> OWL's send errors came in a burst 11 to 17 s after
+<code>/Upload</code> in eleven of the twelve uploads (one was not seen): the successes, the failures,
+and both declines, whose bodies the receiver was still reading in order to discard them. On the three successes, the burst
+fell in the same second as <code>upload complete</code>. So the burst marks the upload in full flow,
+not a failure. The failures stopped near that point and the phone gave up about 2 to 2.5
+minutes later. The tester's reading is that the transfer either completes before something
+around that point stops the flow, or does not complete at all. If so, smaller files should
+succeed more often. That is the next measurement.</p>
+<p><strong>The AirDrop list fix held:</strong> the laptop stayed listed for the full five idle minutes,
+where in session 12 it had vanished. The goodbye again removed it at once on stop, and a
+restart left one entry. No send failed before <code>/Ask</code>, and no <code>saved, but the peer was gone</code>
+line appeared.</p>
+<p><strong>Fixed: a decline took minutes to reach the phone.</strong> After typing <code>n</code>, the phone kept
+showing "Sending" and only showed "Declined" about three minutes later. The receiver
+refused by first reading the whole upload to discard it, so the 401 could arrive as a proper
+response, and at this link's speed that took minutes. The read then died with the link, so
+the log showed a decline exactly like a failed upload. A decline now answers 401 the moment
+<code>/Upload</code> arrives, reads none of the body, logs <code>declined: the upload is refused unread</code>, and
+closes. The upload is still never read before consent; it is now not read at all.</p>
+<p><strong>Fixed: resets after <code>/Discover</code> still read as failures.</strong> Three lines like <code>Connection failed: Unable to read data ... Connection reset by peer</code>, and one write variant, appeared
+after <code>/Discover</code>. The fix in <code>151eee6</code> covers resets while waiting for the next request, and
+the HTTP layer passes those through unwrapped. So these happened elsewhere, most likely
+during the TLS handshake of a connection the phone opened and dropped. The line gave no
+stage and no time, so it could not be placed. It now reads <code>connection failed during the TLS handshake, before any request: ...</code> or <code>connection failed: ...</code>, timestamped like the rest
+of the log.</p>
+<p><strong>Smaller observations:</strong></p>
+<ul>
+<li>OWL logged <code>remove peer</code> for the phone at 00:45:31, 00:58:59, 01:11:02 (after a success)
+and 01:22:21. Each time the phone came back.</li>
+<li>The first upload bytes varied (<code>0000002D789C</code>, <code>0000002C789C</code>, <code>00019624789C</code>) and did not
+predict the outcome. One success was two DVZip blocks, two were five.</li>
+<li>The successes were sends 3, 6 and 9. Twelve sends are too few to read anything into that.</li>
+</ul>
+</section>
+<h3 id="open-questions-14">Open questions</h3>
+<ol>
+<li>
+<strong>Does success depend on file size?</strong> Same place, same setup, five sends each of a
+~50 KB, ~200 KB and ~600 KB file. If small files nearly always arrive and large ones rarely
+do, the limit is how long an upload runs, not the file itself.</li>
+<li>Does the phone now show a decline within seconds?</li>
+<li>Do transfers work at session 10's location? Still untested.</li>
+<li>The consent wait at 30 s and 60 s.</li>
+<li>Sending <strong>to</strong> an iPhone has never been tried.</li>
+</ol>
+        </section>
+        <a class="totop" href="#top">Back to the top</a>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <nav aria-label="Project">
+      <a href="https://github.com/UvejsGj/Windfall">GitHub</a>
+      <a href="https://github.com/UvejsGj/Windfall/blob/main/CONTRIBUTING.md">Contributing</a>
+      <a href="https://github.com/UvejsGj/Windfall/blob/main/SECURITY.md">Security</a>
+      <a href="https://github.com/UvejsGj/Windfall/blob/main/LICENSE">MIT licence</a>
+    </nav>
+    <p>Windfall is an independent learning project, formerly called WinDrop. It is not affiliated with or endorsed by Apple. AirDrop, iPhone and Mac are trademarks of Apple Inc.</p>
+  </footer>
+
+</div>
+</body>
+</html>
