@@ -23,6 +23,7 @@ import base64
 import hashlib
 import io
 import json
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -67,6 +68,8 @@ def package(url: str, integrity: str) -> tarfile.TarFile:
 def weights(voice: str) -> tuple[Path, Path]:
     """The model and the chosen voice, in the files kokoro-onnx reads."""
     model, voices = CACHE / "kokoro-q8.onnx", CACHE / f"{voice}.npz"
+    if model.exists() and hashlib.sha256(model.read_bytes()).hexdigest() != MODEL_SHA256:
+        model.unlink()   # cut short, or changed since: build it again
     if not model.exists():
         tar = package(*MODEL)
         parts = sorted((m for m in tar.getmembers() if m.name.startswith("package/kokoro-q8.part")),
@@ -74,7 +77,9 @@ def weights(voice: str) -> tuple[Path, Path]:
         joined = b"".join(tar.extractfile(m).read() for m in parts)
         if hashlib.sha256(joined).hexdigest() != MODEL_SHA256:
             raise SystemExit("the joined model does not match its known hash")
-        model.write_bytes(joined)
+        part = model.with_suffix(".part")
+        part.write_bytes(joined)
+        part.replace(model)
     if not voices.exists():
         raw = package(*VOICES).extractfile(f"package/voices/{voice}.bin").read()
         np.savez(voices, **{voice: np.frombuffer(raw, dtype=np.float32).reshape(-1, 1, 256)})
@@ -88,14 +93,20 @@ def length(film: Path) -> float:
 
 
 def stamp(t: float) -> str:
-    h, rest = divmod(t, 3600)
-    m, s = divmod(rest, 60)
-    return f"{int(h):02d}:{int(m):02d}:{s:06.3f}"
+    """A WebVTT time. Rounding comes first, so 59.9996 s is 01:00.000, never 00:60.000."""
+    ms = round(t * 1000)
+    h, ms = divmod(ms, 3_600_000)
+    m, ms = divmod(ms, 60_000)
+    s, ms = divmod(ms, 1000)
+    return f"{h:02d}:{m:02d}:{s:02d}.{ms:03d}"
 
 
 def ffmpeg(*args: str) -> str:
-    return subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-y", *args],
-                          check=True, capture_output=True, text=True).stderr
+    done = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-y", *args], capture_output=True, text=True)
+    if done.returncode:
+        lines = done.stderr.strip().splitlines()
+        raise SystemExit(f"ffmpeg failed: {lines[-1] if lines else done.returncode}")
+    return done.stderr
 
 
 def main() -> None:
@@ -140,14 +151,17 @@ def main() -> None:
                     f":measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
         ffmpeg("-i", str(raw), "-af", loud + measured, "-ar", "48000", "-ac", "1", str(voice))
 
-        # The picture is copied as it is. Any voice the films had is replaced.
+        # The picture is copied as it is, with its own times: a voiced WebM starts a few
+        # milliseconds early (Opus's pre-skip), and without -copyts each run would move the
+        # picture that much later. Any voice the films had is replaced. All four are made
+        # before any is replaced, so a failure leaves them as they were.
         for film in films:
-            out = Path(tmp) / film.name
             audio = (["-c:a", "aac", "-b:a", "80k", "-movflags", "+faststart"] if film.suffix == ".mp4"
                      else ["-c:a", "libopus", "-b:a", "48k", "-cues_to_front", "1"])
-            ffmpeg("-i", str(film), "-i", str(voice), "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy",
-                   *audio, "-metadata:s:a:0", "language=eng", str(out))
-            out.replace(film)
+            ffmpeg("-copyts", "-i", str(film), "-i", str(voice), "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy",
+                   *audio, "-metadata:s:a:0", "language=eng", str(Path(tmp) / film.name))
+        for film in films:
+            shutil.move(Path(tmp) / film.name, film)   # a copy where a rename cannot cross disks
             print(f"voiced {film.name}")
 
     def esc(s: str) -> str:

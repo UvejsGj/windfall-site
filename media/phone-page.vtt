@@ -13,15 +13,15 @@ AirDrop needs Apple's own radio link, AWDL, and Windows can't run it.
 So the phone page uses the Wi-Fi both devices already share.
 
 4
-00:00:16.300 --> 00:00:20.929
-On the PC, Your phone shows a QR code, and the iPhone's camera reads it.
+00:00:16.300 --> 00:00:19.991
+The PC shows a QR code, and the iPhone's camera reads it.
 
 5
-00:00:21.229 --> 00:00:24.920
+00:00:20.291 --> 00:00:23.981
 It holds the PC's address and a secret token, new every run.
 
 6
-00:00:25.400 --> 00:00:26.957
+00:00:24.300 --> 00:00:25.857
 Safari opens the page.
 
 7
@@ -53,8 +53,8 @@ They're saved together, or not at all.
 What you agree to is what gets saved.
 
 14
-00:00:56.984 --> 00:01:01.464
-If a file doesn't match the list, by name, size or count, nothing is kept.
+00:00:56.984 --> 00:01:02.573
+Files keep their listed names. If one is bigger than listed, or the count is off, nothing is kept.
 
 15
 00:01:03.700 --> 00:01:05.215
@@ -89,8 +89,8 @@ Two locks keep it safe: the secret token in the address, and the question on the
 It's plain HTTP, so use it on a network you trust.
 
 23
-00:01:33.700 --> 00:01:37.903
-All of this was tested with a real iPhone, on iOS 27.
+00:01:33.700 --> 00:01:37.860
+These four were tested with a real iPhone, on iOS 27.
 
 24
 00:01:38.200 --> 00:01:41.123

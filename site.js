@@ -175,6 +175,14 @@
       if (cue !== null) { video.currentTime = cue; cue = null; }
     });
     video.addEventListener('timeupdate', sync);
+    // timeupdate comes only about four times a second. Where the browser can say when each
+    // frame is shown, the apple keeps time with the frames instead, so it lands as the
+    // caption changes rather than up to a quarter of a second after.
+    var framed = false;
+    function onFrame() { framed = false; sync(); watch(); }
+    function watch() {
+      if (!framed && video.requestVideoFrameCallback) { framed = true; video.requestVideoFrameCallback(onFrame); }
+    }
     video.addEventListener('seeking', function () { falling = -1; now = -2; });
     video.addEventListener('seeked', function () { uncue(); sync(); });
     // Until a jump to a step has landed, the film is hidden and the still shows through, so
@@ -182,6 +190,7 @@
     // at most a moment and ends with a pause.
     video.addEventListener('play', function () {
       wrap.classList.add('playing');
+      watch();
       if (cue !== null) {
         frame.classList.add('cueing');
         clearTimeout(cueing);
