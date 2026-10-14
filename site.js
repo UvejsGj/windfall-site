@@ -73,7 +73,7 @@
     var dark = window.matchMedia('(prefers-color-scheme: dark)');
     var DOT = 11;     // the middle of a stop's dot, below the top of the stop (site.css)
     var FALL = 0.55;  // seconds the apple takes to drop to the next stop (site.css)
-    var now = -2, falling = -1, cue = null, worn = null;
+    var now = -2, falling = -1, cue = null, worn = null, cueing = null;
 
     var buttons = stops.map(function (li, i) {
       var link = li.querySelector('a');
@@ -176,30 +176,41 @@
     });
     video.addEventListener('timeupdate', sync);
     video.addEventListener('seeking', function () { falling = -1; now = -2; });
-    video.addEventListener('seeked', function () { frame.classList.remove('cueing'); sync(); });
+    video.addEventListener('seeked', function () { uncue(); sync(); });
     // Until a jump to a step has landed, the film is hidden and the still shows through, so
-    // that its opening frame does not flash first.
+    // that its opening frame does not flash first. That hides the controls too, so it lasts
+    // at most a moment and ends with a pause.
     video.addEventListener('play', function () {
       wrap.classList.add('playing');
-      if (cue !== null) frame.classList.add('cueing');
+      if (cue !== null) {
+        frame.classList.add('cueing');
+        clearTimeout(cueing);
+        cueing = setTimeout(uncue, 1500);
+      }
       sync();
     });
+    function uncue() {
+      clearTimeout(cueing);
+      frame.classList.remove('cueing');
+    }
 
     // If a render will not play, try the other file for the same theme from the same moment.
-    // This only follows a play the reader asked for.
+    // It plays on only if it was playing: a reader who paused first is not overruled.
     video.addEventListener('error', function () {
+      var resume = wrap.classList.contains('playing');
       wrap.classList.remove('playing');
-      frame.classList.remove('cueing');
+      uncue();
       var mine = sources.filter(function (s) { return s.getAttribute('data-theme') === worn; })
         .map(function (s) { return s.getAttribute('src'); });
       var k = mine.indexOf(video.getAttribute('src'));
       if (k < 0 || k + 1 >= mine.length) return;
       if (cue === null && video.currentTime > 0) cue = video.currentTime;
       video.src = mine[k + 1];
+      if (!resume) return;
       var p = video.play();
       if (p && p.catch) p.catch(function () {});
     });
-    video.addEventListener('pause', function () { wrap.classList.remove('playing'); dress(); });
+    video.addEventListener('pause', function () { wrap.classList.remove('playing'); uncue(); dress(); });
 
     // Two renders, one for each theme. The film offered is the one that matches the page. If
     // the theme changes, the film follows at the next pause, from the same moment.

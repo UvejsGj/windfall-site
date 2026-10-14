@@ -258,7 +258,8 @@ code { font-size: .88em; background: var(--tint-stem); padding: .1em .35em; bord
   .reel-line a::after, .reel-line button::after { inset: -9px 0 -9px -52px; }   /* half the wider gap, so the stops meet */
   /* The apple lands level with "1:33 Verified", as on a wide screen, so the last headline
      hangs below the line's end. */
-  .reel-line li.land .hl { position: absolute; top: 100%; left: 0; right: 0; margin-top: 2px; }
+  .reel-line li.land .hl { position: absolute; top: 100%; left: 0; right: 0; margin-top: 2px; pointer-events: none; }
+  .reel-line li.land a::after, .reel-line li.land button::after { bottom: -3.4em; }   /* its headline is part of its target */
   .reel-wrap { padding-bottom: 3.4em; }
 }
 @media (max-width: 620px) { .script li { grid-template-columns: minmax(0, 1fr); } }

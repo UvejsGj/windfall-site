@@ -6,7 +6,7 @@
 // film.html is an animation that draws any moment it is asked for, so nothing depends on
 // how fast the machine is: each frame is drawn, photographed by a headless Chromium, and
 // handed to ffmpeg. Every frame goes to two encoders at once: H.264 in an MP4, which
-// plays everywhere, and AV1 in a WebM, a third of the size where it is supported. The
+// plays everywhere, and AV1 in a WebM, about half the size where it is supported. The
 // frame at 0:21, the scan, is also kept as a WebP still, which the page shows until the
 // film is played.
 //
