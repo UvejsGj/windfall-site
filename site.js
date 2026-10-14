@@ -64,6 +64,7 @@
 
   function reel(video) {
     var wrap = document.querySelector('.reel-wrap');
+    var frame = video.parentNode;
     var line = wrap.querySelector('.reel-line');
     var apple = line.querySelector('.apple');
     var stops = [].slice.call(line.querySelectorAll('li[data-at]'));
@@ -86,24 +87,35 @@
     line.setAttribute('aria-label', 'Play the film from a step');
 
     // A stop plays the film from its step. On a phone the stops sit below the film, so if
-    // it is out of sight it is brought into view first.
+    // it is out of sight it is brought into view first. If that leaves the stop itself out
+    // of sight, the film takes the focus, so that Space pauses it rather than starting the
+    // step again where nobody can see.
     function go(i) {
+      if (video.error) video.load();   // an earlier load failed: try again
       if (video.readyState) video.currentTime = at[i]; else cue = at[i];
       sync();
       var p = video.play();
       if (p && p.catch) p.catch(function () {});
-      show();
+      var y = show(), b = buttons[i], top = pageTop(b);
+      if (top < y || top + b.offsetHeight > y + window.innerHeight) video.focus({ preventScroll: true });
     }
 
-    // Scroll the least distance that puts the whole film in view. This goes by where the
-    // film sits in the page rather than where it is drawn, since a film that has not risen
-    // into place yet is drawn lower than it will end up.
-    function show() {
-      var frame = video.parentNode, top = 0, el = frame;
+    // Where an element sits in the page, rather than where it is drawn: a film that has not
+    // risen into place yet is drawn lower than it will end up.
+    function pageTop(el) {
+      var top = 0;
       for (; el; el = el.offsetParent) top += el.offsetTop;
-      var bottom = top + frame.offsetHeight, y = window.pageYOffset, h = window.innerHeight;
-      if (top >= y && bottom <= y + h) return;
-      window.scrollTo({ top: top < y || bottom - top > h ? top : bottom - h, behavior: moving ? 'smooth' : 'auto' });
+      return top;
+    }
+
+    // Scroll the least distance that puts the whole film in view, and say where the page
+    // will rest.
+    function show() {
+      var top = pageTop(frame), bottom = top + frame.offsetHeight, y = window.pageYOffset, h = window.innerHeight;
+      if (top >= y && bottom <= y + h) return y;
+      var to = top < y || bottom - top > h ? top : bottom - h;
+      window.scrollTo({ top: to, behavior: moving ? 'smooth' : 'auto' });
+      return to;
     }
 
     // Which step the film is on: the last stop it has reached, or -1 on the title card.
@@ -121,9 +133,12 @@
       if (li.classList.contains('land')) return li.offsetTop + li.offsetHeight - apple.offsetHeight;
       return li.offsetTop + DOT - apple.offsetHeight / 2;
     }
+    // Measuring comes first: it settles the apple where it is now, so a fall always starts
+    // from the stop it was placed on, never from wherever it was before a jump.
     function place(i, fall) {
+      var to = y(i);
       apple.classList.toggle('falling', fall);
-      apple.style.transform = 'translateY(' + y(i) + 'px)';
+      apple.style.transform = 'translateY(' + to + 'px)';
     }
     apple.addEventListener('transitionend', function () {
       apple.classList.remove('falling', 'landed');
@@ -138,7 +153,7 @@
         if (k === i) buttons[k].setAttribute('aria-current', 'step');
         else buttons[k].removeAttribute('aria-current');
       });
-      if (falling !== i) place(i, false);   // already on its way down: let it land
+      if (i < 0 || falling !== i) place(i, false);   // already on its way down: let it land
       falling = -1;
       now = i;
     }
@@ -161,8 +176,29 @@
     });
     video.addEventListener('timeupdate', sync);
     video.addEventListener('seeking', function () { falling = -1; now = -2; });
-    video.addEventListener('seeked', sync);
-    video.addEventListener('play', function () { wrap.classList.add('playing'); sync(); });
+    video.addEventListener('seeked', function () { frame.classList.remove('cueing'); sync(); });
+    // Until a jump to a step has landed, the film is hidden and the still shows through, so
+    // that its opening frame does not flash first.
+    video.addEventListener('play', function () {
+      wrap.classList.add('playing');
+      if (cue !== null) frame.classList.add('cueing');
+      sync();
+    });
+
+    // If a render will not play, try the other file for the same theme from the same moment.
+    // This only follows a play the reader asked for.
+    video.addEventListener('error', function () {
+      wrap.classList.remove('playing');
+      frame.classList.remove('cueing');
+      var mine = sources.filter(function (s) { return s.getAttribute('data-theme') === worn; })
+        .map(function (s) { return s.getAttribute('src'); });
+      var k = mine.indexOf(video.getAttribute('src'));
+      if (k < 0 || k + 1 >= mine.length) return;
+      if (cue === null && video.currentTime > 0) cue = video.currentTime;
+      video.src = mine[k + 1];
+      var p = video.play();
+      if (p && p.catch) p.catch(function () {});
+    });
     video.addEventListener('pause', function () { wrap.classList.remove('playing'); dress(); });
 
     // Two renders, one for each theme. The film offered is the one that matches the page. If

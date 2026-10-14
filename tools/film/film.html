@@ -64,7 +64,8 @@ html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; backgro
 .win { position: absolute; left: 40px; top: 30px; width: 784px; height: 444px; background: var(--pith); border-radius: 12px; box-shadow: 0 12px 30px -12px var(--shadow); overflow: hidden; }
 .win .bar { height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid var(--rule); font: 700 20px var(--display); }
 .win .bar svg { width: 24px; height: 24px; }
-.win .bar .dots { margin-left: auto; color: var(--stem); font: 400 18px var(--body); letter-spacing: 6px; }
+.win .bar .dots { margin-left: 6px; color: var(--stem); font: 400 18px var(--body); letter-spacing: 6px; }
+.win .bar .tb-phone { margin-left: auto; padding: 6px 14px; border-radius: 8px; background: var(--skin); color: var(--on-skin); font: 600 16px var(--body); }
 .layer { position: absolute; left: 0; right: 0; top: 44px; bottom: 0; padding: 26px 30px; }
 .pc-h { font: 700 30px/1.1 var(--display); }
 .pc-p { font: 400 19px/1.4 var(--body); color: var(--stem); margin-top: 8px; }
@@ -239,12 +240,11 @@ html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; backgro
   <div id="pc" class="abs">
     <div id="monitor"><div id="screen">
       <div class="win">
-        <div class="bar"><svg><use href="#mark"/></svg>Windfall<span class="dots">● ● ●</span></div>
+        <div class="bar"><svg><use href="#mark"/></svg>Windfall<span class="tb-phone" id="phone-btn">📱 Your phone</span><span class="dots">● ● ●</span></div>
 
         <div class="layer" id="pc-home">
           <div class="pc-h">Ready</div>
           <div class="pc-p">iPhones only appear here over AWDL. For one on this Wi-Fi, use the phone button above.</div>
-          <div style="margin-top:40px;display:flex;gap:16px;align-items:center"><span class="btn red" id="phone-btn">📱 Your phone</span><span class="pc-p" style="margin:0">Scan a code, send both ways</span></div>
         </div>
 
         <div class="layer" id="pc-qr">
@@ -477,6 +477,15 @@ function fly(i, text, cls, t, t0, dur, dir, yOff = 0, w = 0) {
 }
 
 // cursor & ripples (PC coordinates are inside #screen)
+// The middle of a button on the PC's screen, in #screen coordinates. Layout offsets ignore the
+// layers' fade transforms, so this is where the button rests.
+function spot(id) {
+  let el = $(id), x = el.offsetWidth / 2, y = el.offsetHeight / 2;
+  for (; el && el.id !== 'screen'; el = el.offsetParent) { x += el.offsetLeft; y += el.offsetTop; }
+  return [x, y];
+}
+// The pointer's tip is 2px in from the corner of its image.
+const tip = ([x, y]) => [x - 2, y - 2];
 function cursorPath(t, keys) {
   // keys: [[t, x, y], ...]
   if (t <= keys[0][0]) return keys[0];
@@ -501,7 +510,7 @@ const T = {
   c1: [6, 11.5], c1b: [11.5, 16],
   c2: [16, 27.5],
   c3: [27.5, 36], flow: [27.5, 36],
-  c4: [36, 44.5], c5: [44.5, 52],
+  c4: [36, 43.9], c5: [43.9, 52],
   c6: [52, 61], c7: [61, 69.5], c8: [69.5, 80],
   c9: [80, 91], c10: [91, 101],
   END: 101,
@@ -542,8 +551,8 @@ function render(rt) {
   const btnPulse = t > 14.5 && t < 17 ? 1 + .06 * Math.sin((t - 14.5) * 8) : 1;
   $('phone-btn').style.transform = `scale(${btnPulse})`;
   vis('pc-qr', t, 17, 38.6, .35, 10);
-  vis('pc-ask', t, 38.6, 41.3, .3, 10);
-  vis('pc-saved', t, 41.3, 61.6, .3, 10);
+  vis('pc-ask', t, 38.6, 44.1, .3, 10);
+  vis('pc-saved', t, 44.1, 61.6, .3, 10);
   vis('pc-ask2', t, 61.6, 64.3, .3, 10);
   vis('pc-declined', t, 64.3, 69.8, .3, 10);
   vis('pc-offer', t, 69.8, Infinity, .3, 10);
@@ -553,25 +562,26 @@ function render(rt) {
   // saved rows tick in
   const rows = $('saved-rows').children;
   for (let i = 0; i < 5; i++) {
-    const done = 41.6 + (i + 1) * .9;
+    const done = 44.4 + (i + 1) * .9;
     rows[i].querySelector('.tick').style.opacity = t >= done ? 1 : 0;
-    rows[i].style.opacity = t >= 41.6 + i * .9 ? 1 : .35;
+    rows[i].style.opacity = t >= 44.4 + i * .9 ? 1 : .35;
   }
-  $('saved-h').textContent = t < 46.2 ? 'Receiving from iPhone…' : 'Saved 5 files from iPhone';
+  $('saved-h').textContent = t < 49 ? 'Receiving from iPhone…' : 'Saved 5 files from iPhone';
 
   // PC cursor: to phone button, to Accept, to Decline
+  const P = spot('phone-btn'), A = spot('b-accept'), D = spot('b-decline2');
   const cur = cursorPath(t, [
-    [13.4, 520, 420], [14.6, 140, 162], [15.4, 140, 162],
-    [38.8, 600, 470], [40.4, 760, 456], [43, 760, 456],
-    [62, 600, 470], [63.4, 640, 456], [70, 640, 456], [71, 700, 520],
+    [13.4, 520, 420], [14.6, ...tip(P)], [15.4, ...tip(P)],
+    [38.8, 600, 470], [41.8, ...tip(A)], [46, ...tip(A)],
+    [62, 600, 470], [63.4, ...tip(D)], [70, ...tip(D)], [71, 700, 520],
   ]);
   $('cursor').style.transform = `translate(${cur[1]}px, ${cur[2]}px)`;
-  op('cursor', Math.min(prog(t, 13.4, 13.8), 1 - prog(t, 16.4, 16.8)) + Math.min(prog(t, 38.8, 39.2), 1 - prog(t, 42, 42.4)) + Math.min(prog(t, 62, 62.4), 1 - prog(t, 65, 65.4)));
+  op('cursor', Math.min(prog(t, 13.4, 13.8), 1 - prog(t, 16.4, 16.8)) + Math.min(prog(t, 38.8, 39.2), 1 - prog(t, 44.6, 45)) + Math.min(prog(t, 62, 62.4), 1 - prog(t, 65, 65.4)));
   $('ripple-pc').style.opacity = 0;
-  if (t > 15.4 && t < 16.2) ripple('ripple-pc', t, 15.4, 150, 172);
-  if (t > 40.8 && t < 41.6) ripple('ripple-pc', t, 40.8, 770, 466);
-  if (t > 63.6 && t < 64.4) ripple('ripple-pc', t, 63.6, 650, 466);
-  $('b-accept').style.transform = t > 40.8 && t < 41.1 ? 'scale(.94)' : 'none';
+  if (t > 15.4 && t < 16.2) ripple('ripple-pc', t, 15.4, ...P);
+  if (t > 43.6 && t < 44.4) ripple('ripple-pc', t, 43.6, ...A);
+  if (t > 63.6 && t < 64.4) ripple('ripple-pc', t, 63.6, ...D);
+  $('b-accept').style.transform = t > 43.6 && t < 43.9 ? 'scale(.94)' : 'none';
   $('b-decline2').style.transform = t > 63.6 && t < 63.9 ? 'scale(.94)' : 'none';
 
   // ---- phone layers ----
@@ -597,20 +607,20 @@ function render(rt) {
   const sendO = (t >= 28.9 && t < 49.5) || (t >= 61.1 && t < 69.8);
   op('sendbtn', sendO ? 1 : 0); $('sendbtn').style.display = sendO ? 'block' : 'none';
   $('sendbtn').textContent = t < 55 ? 'Send 5 files' : 'Send 1 file';
-  const sending = (t >= 30 && t < 46.2) || (t >= 61.6 && t < 64.3);
+  const sending = (t >= 30 && t < 49) || (t >= 61.6 && t < 64.3);
   $('sendbtn').classList.toggle('dim', sending);
   $('choose').classList.toggle('dim', sending);
   $('prog').style.display = (t >= 30 && t < 49.5) || (t >= 61.6 && t < 69.8) ? 'block' : 'none';
   let bar = 0;
-  if (t >= 30 && t < 41) bar = lerp(0, 3, prog(t, 30, 32));
-  else if (t >= 41 && t < 49.5) bar = lerp(3, 100, clamp((t - 41.4) / 4.8));
+  if (t >= 30 && t < 43.8) bar = lerp(0, 3, prog(t, 30, 32));
+  else if (t >= 43.8 && t < 49.5) bar = lerp(3, 100, clamp((t - 44.2) / 4.8));
   else if (t >= 61.6) bar = lerp(0, 2, prog(t, 61.6, 62.6));
   $('progbar').style.width = bar + '%';
   const st = $('st');
   st.className = 'st';
-  if (t >= 30 && t < 41.4) st.textContent = 'Waiting for STUDIO-PC to accept…';
-  else if (t >= 41.4 && t < 46.2) st.textContent = `Sending… ${Math.round(bar)}%`;
-  else if (t >= 46.2 && t < 61) { st.textContent = 'Sent 5 files.'; st.className = 'st ok'; }
+  if (t >= 30 && t < 44.2) st.textContent = 'Waiting for STUDIO-PC to accept…';
+  else if (t >= 44.2 && t < 49) st.textContent = `Sending… ${Math.round(bar)}%`;
+  else if (t >= 49 && t < 61) { st.textContent = 'Sent 5 files.'; st.className = 'st ok'; }
   else if (t >= 61.6 && t < 64.6) st.textContent = 'Waiting for STUDIO-PC to accept…';
   else if (t >= 64.6 && t < 69.8) { st.textContent = 'Declined on STUDIO-PC.'; st.className = 'st bad'; }
   else st.textContent = '';
@@ -646,18 +656,18 @@ function render(rt) {
   fly(n++, 'manifest: 5 files', 'chip', t, 36.9, 1.2, -1, 0, 200);
   fly(n++, 'file 1 headers', 'chip red', t, 37.4, 1.2, -1, 36, 170);
   // held back: a waiting chip hovering at phone edge
-  const hold = (t > 38.6 && t < 41.2) ? 1 : 0;
+  const hold = (t > 38.6 && t < 44) ? 1 : 0;
   chipAt(n++, 'held by TCP ⏸', 'chip red', LX1 - 175 + Math.sin(t * 6) * 2, LY + 60, hold * Math.min(1, (t - 38.6) * 3));
   // stream of bytes after accept
-  for (let k = 0; k < 26; k++) fly(n++, '', 'byte', t, 41.4 + k * .18, .9, -1, ((k * 37) % 5 - 2) * 10, 16);
-  fly(n++, '200 OK', 'chip leaf', t, 46.2, 1, 1, 0, 90);
+  for (let k = 0; k < 26; k++) fly(n++, '', 'byte', t, 44.2 + k * .18, .9, -1, ((k * 37) % 5 - 2) * 10, 16);
+  fly(n++, '200 OK', 'chip leaf', t, 49, 1, 1, 0, 90);
   // decline round
   fly(n++, 'manifest: 1 file', 'chip', t, 61.4, 1, -1, 0, 190);
   fly(n++, '403 Declined', 'chip red', t, 63.9, 1, 1, 0, 150);
   // downloads
-  fly(n++, 'GET /files/4/0', 'chip', t, 72.9, 1.1, -1, 0, 180);
+  fly(n++, 'GET /k3J9…/files/4/0', 'chip', t, 72.9, 1.1, -1, 0, 245);
   for (let k = 0; k < 16; k++) fly(n++, '', 'byte', t, 73.6 + k * .17, .8, 1, ((k * 23) % 5 - 2) * 10, 16);
-  fly(n++, 'GET /files/3/0 → 404', 'chip red', t, 77.4, 1.4, -1, 44, 240);
+  fly(n++, 'GET /k3J9…/files/3/0 → 404', 'chip red', t, 77.4, 1.4, -1, 44, 280);
 
   // ---- flow overlay ----
   vis('flow', t, 31.2, 35.6, .5, 0);

@@ -28,6 +28,10 @@ To look at a change before pushing it, serve the folder and open it in a browser
 python -m http.server 8000
 ```
 
+Python's server does not answer range requests, so the film plays there but cannot jump to
+a step or be scrubbed. To try those, use a server that does, such as `npx http-server -p 8000`.
+Pages answers them.
+
 ## Refreshing the lab notes
 
 The notes are written in the Windfall repository. After they change there, rebuild the page
@@ -73,7 +77,8 @@ npx playwright install chromium
 node tools/film/render.mjs
 ```
 
-It needs ffmpeg with libx264, libsvtav1 and libwebp, and takes about ten minutes a theme.
+It needs ffmpeg with libx264, libsvtav1 and libwebp, and a network connection for the film's
+fonts. It takes about ten minutes a theme.
 
 ## Licence
 

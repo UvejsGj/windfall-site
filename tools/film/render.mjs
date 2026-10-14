@@ -11,12 +11,12 @@
 // film is played.
 //
 // Needs Node 18 or later, Playwright with its Chromium (npm install playwright, then
-// npx playwright install chromium), and ffmpeg built with libx264, libsvtav1 and libwebp.
-// A full render takes about ten minutes a theme.
+// npx playwright install chromium), ffmpeg built with libx264, libsvtav1 and libwebp, and a
+// network connection for the film's fonts. A full render takes about ten minutes a theme.
 
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -47,8 +47,12 @@ function write(stream, buf) {
 const browser = await chromium.launch();
 for (const theme of themes) {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
-  await page.goto('file://' + path.join(HERE, 'film.html') + '?theme=' + theme);
+  await page.goto(pathToFileURL(path.join(HERE, 'film.html')).href + '?theme=' + theme);
   await page.evaluate(() => document.fonts.ready);
+  // The fonts come from Google Fonts. Without them the film would be drawn in fallback faces.
+  const fonts = await page.evaluate(() => ['Bricolage Grotesque', 'Instrument Sans', 'IBM Plex Mono']
+    .filter((f) => ![...document.fonts].some((x) => x.family.replace(/"/g, '') === f && x.status === 'loaded')));
+  if (fonts.length) throw new Error(`fonts did not load: ${fonts.join(', ')}. The render needs a network connection.`);
   const frames = Math.round((await page.evaluate(() => window.DURATION)) * FPS);
 
   // A keyframe at each step start lets a jump to a step in the MP4 start at once. SVT-AV1
