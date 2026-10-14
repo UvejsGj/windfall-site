@@ -1,0 +1,97 @@
+WEBVTT
+
+1
+00:00:00.500 --> 00:00:05.919
+The phone page sends files between an iPhone and a Windows PC, over plain Wi-Fi.
+
+2
+00:00:06.400 --> 00:00:11.584
+AirDrop needs Apple's own radio link, AWDL, and Windows can't run it.
+
+3
+00:00:11.900 --> 00:00:15.847
+So the phone page uses the Wi-Fi both devices already share.
+
+4
+00:00:16.300 --> 00:00:20.929
+On the PC, Your phone shows a QR code, and the iPhone's camera reads it.
+
+5
+00:00:21.229 --> 00:00:24.920
+It holds the PC's address and a secret token, new every run.
+
+6
+00:00:25.400 --> 00:00:26.957
+Safari opens the page.
+
+7
+00:00:27.800 --> 00:00:29.699
+Pick five photos and tap Send.
+
+8
+00:00:29.999 --> 00:00:36.441
+The upload is one request, and its order is the point: first the device, then the list of files, then the files.
+
+9
+00:00:38.600 --> 00:00:43.976
+The PC reads the list, then stops and asks, before it reads a single byte of the files.
+
+10
+00:00:44.276 --> 00:00:45.599
+The phone has to wait.
+
+11
+00:00:46.600 --> 00:00:49.587
+Accept, and the photos stream across at Wi-Fi speed.
+
+12
+00:00:49.887 --> 00:00:51.999
+They're saved together, or not at all.
+
+13
+00:00:54.700 --> 00:00:56.684
+What you agree to is what gets saved.
+
+14
+00:00:56.984 --> 00:01:01.464
+If a file doesn't match the list, by name, size or count, nothing is kept.
+
+15
+00:01:03.700 --> 00:01:05.215
+This time, one photo.
+
+16
+00:01:05.400 --> 00:01:07.768
+Decline it, and the phone is told at once.
+
+17
+00:01:08.068 --> 00:01:10.180
+Nothing is left behind on the PC.
+
+18
+00:01:12.200 --> 00:01:14.056
+Files can go the other way too.
+
+19
+00:01:14.356 --> 00:01:19.668
+While the sheet is open, the PC offers files, and the phone saves them to its Files app.
+
+20
+00:01:19.968 --> 00:01:22.016
+Links to an old offer stop working.
+
+21
+00:01:22.700 --> 00:01:27.713
+Two locks keep it safe: the secret token in the address, and the question on the PC.
+
+22
+00:01:28.013 --> 00:01:31.555
+It's plain HTTP, so use it on a network you trust.
+
+23
+00:01:33.700 --> 00:01:37.903
+All of this was tested with a real iPhone, on iOS 27.
+
+24
+00:01:38.200 --> 00:01:41.123
+Not AirDrop. Just the Wi-Fi you already have.

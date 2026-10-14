@@ -245,7 +245,8 @@ code { font-size: .88em; background: var(--tint-stem); padding: .1em .35em; bord
 .sec .script .hd { margin: 0; font-size: 1.15rem; line-height: 1.25; letter-spacing: -.01em; }
 .script .said { font-size: 15.5px; line-height: 1.5; }
 .script .seen { font-size: 14.5px; line-height: 1.5; color: var(--stem); }
-.script .seen b { margin-right: 4px; font: 500 11px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--seed); }
+.script .voice { font-size: 15.5px; line-height: 1.5; }
+.script .voice b, .script .seen b { margin-right: 4px; font: 500 11px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--seed); }
 .script code { overflow-wrap: anywhere; }
 
 @media (max-width: 860px) {

@@ -1,0 +1,42 @@
+{
+  "voice": "af_heart",
+  "speed": 1.0,
+  "pause": 0.3,
+  "about": "The film's voice. Times are in seconds of the film, as data-at in index.html: every source time in film.html after 34.6 s is 2.4 s later in the film. A line without 'at' follows the one before it after 'pause' seconds. 'say' is how a line is spoken, where that differs from how it is written; 'text' is what the captions show.",
+  "lines": [
+    { "at": 0.5, "text": "The phone page sends files between an iPhone and a Windows PC, over plain Wi-Fi." },
+
+    { "at": 6.4, "text": "AirDrop needs Apple's own radio link, AWDL, and Windows can't run it.", "say": "AirDrop needs Apple's own radio link, A-W-D-L, and Windows can't run it." },
+    { "at": 11.9, "text": "So the phone page uses the Wi-Fi both devices already share." },
+
+    { "at": 16.3, "text": "On the PC, Your phone shows a QR code, and the iPhone's camera reads it." },
+    { "text": "It holds the PC's address and a secret token, new every run." },
+    { "at": 25.4, "text": "Safari opens the page." },
+
+    { "at": 27.8, "text": "Pick five photos and tap Send." },
+    { "text": "The upload is one request, and its order is the point: first the device, then the list of files, then the files." },
+
+    { "at": 38.6, "text": "The PC reads the list, then stops and asks, before it reads a single byte of the files." },
+    { "text": "The phone has to wait." },
+
+    { "at": 46.6, "text": "Accept, and the photos stream across at Wi-Fi speed." },
+    { "text": "They're saved together, or not at all." },
+
+    { "at": 54.7, "text": "What you agree to is what gets saved." },
+    { "text": "If a file doesn't match the list, by name, size or count, nothing is kept." },
+
+    { "at": 63.7, "text": "This time, one photo." },
+    { "at": 65.4, "text": "Decline it, and the phone is told at once." },
+    { "text": "Nothing is left behind on the PC." },
+
+    { "at": 72.2, "text": "Files can go the other way too." },
+    { "text": "While the sheet is open, the PC offers files, and the phone saves them to its Files app." },
+    { "text": "Links to an old offer stop working." },
+
+    { "at": 82.7, "text": "Two locks keep it safe: the secret token in the address, and the question on the PC." },
+    { "text": "It's plain HTTP, so use it on a network you trust." },
+
+    { "at": 93.7, "text": "All of this was tested with a real iPhone, on iOS 27." },
+    { "at": 98.2, "text": "Not AirDrop. Just the Wi-Fi you already have." }
+  ]
+}

@@ -8,7 +8,7 @@
 // handed to ffmpeg. Every frame goes to two encoders at once: H.264 in an MP4, which
 // plays everywhere, and AV1 in a WebM, about half the size where it is supported. The
 // frame at 0:21, the scan, is also kept as a WebP still, which the page shows until the
-// film is played.
+// film is played. The films come out silent: voice.py then adds the voice-over to them.
 //
 // Needs Node 18 or later, Playwright with its Chromium (npm install playwright, then
 // npx playwright install chromium), ffmpeg built with libx264, libsvtav1 and libwebp, and a

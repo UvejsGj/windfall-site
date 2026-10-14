@@ -18,8 +18,8 @@ updates the site within a minute or two. Nothing is built on GitHub.
 | `site.js` | The motion and the list of entries on the notes page. Both pages read in full without it |
 | `tools/build_notes.py` | Builds `notes.html` from Windfall's `docs/protocol-notes.md` |
 | `social-card.png` | The image shown when a link to the site is shared |
-| `media/` | The phone-page film on the home page: a light and a dark render, each as AV1 WebM and H.264 MP4, and a still from each. Made by `tools/film/render.mjs` |
-| `tools/film/` | The film's source, an HTML animation drawn one frame at a time, and the script that renders it |
+| `media/` | The phone-page film on the home page: a light and a dark render, each as AV1 WebM and H.264 MP4 with a voice-over, a still from each, and captions for the voice (`phone-page.vtt`). Made by `tools/film/render.mjs` and `tools/film/voice.py` |
+| `tools/film/` | The film's source, an HTML animation drawn one frame at a time, the script that renders it, and its voice: the lines and their times (`narration.json`) and the script that speaks them |
 | `.nojekyll` | Tells GitHub Pages to serve the files as they are |
 
 To look at a change before pushing it, serve the folder and open it in a browser:
@@ -55,7 +55,8 @@ how often transfers complete, and the speed. When those change there, change the
 
 The film's step times (`data-at`) and its written-out words in `index.html` follow
 `tools/film/film.html`. If the film is rendered again with other timing or words, change them
-there too, and the keyframe times in `render.mjs`.
+there too, and the keyframe times in `render.mjs`. The voice's times in `narration.json` follow the
+same film; `python tools/film/voice.py --check` shows whether every line still fits.
 
 ## Motion
 
@@ -79,6 +80,20 @@ node tools/film/render.mjs
 
 It needs ffmpeg with libx264, libsvtav1 and libwebp, and a network connection for the film's
 fonts. It takes about ten minutes a theme.
+
+The films come out of `render.mjs` silent. The voice goes in afterwards:
+
+```
+pip install kokoro-onnx soundfile
+python tools/film/voice.py
+```
+
+It speaks each line of `narration.json` with Kokoro-82M, an open speech model (Apache-2.0),
+refuses to write anything if a line runs into the next, and then puts the voice into the four
+films and writes `media/phone-page.vtt`. The picture is copied, not encoded again. The model
+and its voices are packaged on npm and checked against known hashes, about 90 MB fetched once
+into `tools/film/.voice/`. It also needs ffmpeg with aac and libopus. To change what the voice
+says, edit `narration.json` and run it again, with `--check` first to see how each line fits.
 
 ## Licence
 

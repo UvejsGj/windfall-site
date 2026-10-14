@@ -212,15 +212,16 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
 
       <figure class="reel" data-rise>
         <div class="screen">
-          <video controls playsinline preload="none" width="1920" height="1080" poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'/%3E" aria-label="How the phone page works: a film with no sound, 1 min 43 s">
-            <source data-theme="light" media="(prefers-color-scheme: light)" src="media/phone-page-light.webm" type='video/webm; codecs="av01.0.08M.08"'>
-            <source data-theme="light" media="(prefers-color-scheme: light)" src="media/phone-page-light.mp4" type='video/mp4; codecs="avc1.640032"'>
-            <source data-theme="dark" src="media/phone-page-dark.webm" type='video/webm; codecs="av01.0.08M.08"'>
-            <source data-theme="dark" src="media/phone-page-dark.mp4" type='video/mp4; codecs="avc1.640032"'>
-            <p>This browser cannot play the film. <a href="media/phone-page-light.mp4">Download it</a> (MP4, 5 MB), or read it below.</p>
+          <video controls playsinline preload="none" width="1920" height="1080" poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'/%3E" aria-label="How the phone page works: a film with a voice-over, 1 min 43 s">
+            <source data-theme="light" media="(prefers-color-scheme: light)" src="media/phone-page-light.webm" type='video/webm; codecs="av01.0.08M.08, opus"'>
+            <source data-theme="light" media="(prefers-color-scheme: light)" src="media/phone-page-light.mp4" type='video/mp4; codecs="avc1.640032, mp4a.40.2"'>
+            <source data-theme="dark" src="media/phone-page-dark.webm" type='video/webm; codecs="av01.0.08M.08, opus"'>
+            <source data-theme="dark" src="media/phone-page-dark.mp4" type='video/mp4; codecs="avc1.640032, mp4a.40.2"'>
+            <track kind="captions" src="media/phone-page.vtt" srclang="en" label="English">
+            <p>This browser cannot play the film. <a href="media/phone-page-light.mp4">Download it</a> (MP4, 6 MB), or read it below.</p>
           </video>
         </div>
-        <figcaption class="small">How the phone page works. 1 min 43 s, with no sound. The film loads only when it is played, and what it says and shows is written out below.</figcaption>
+        <figcaption class="small">How the phone page works. 1 min 43 s, with a voice-over, which the player can caption. The film loads only when it is played, and what it says and shows is written out below.</figcaption>
       </figure>
 
       <div class="reel-wrap" data-rise>
@@ -246,78 +247,90 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
 
       <details class="script" id="phone-page-words">
         <summary>Read the film</summary>
-        <p class="small">The captions, in order, and what each scene shows.</p>
+        <p class="small">The captions, what the voice says, and what each scene shows, in order.</p>
         <ol>
           <li><time datetime="PT0S">0:00</time><div>
             <p class="eb">Title</p>
             <h3 class="hd">Windfall</h3>
             <p class="said">How the phone page gets files between an iPhone and Windows. Ordinary Wi-Fi · no app · no extra hardware.</p>
+            <p class="voice"><b>Voice</b> The phone page sends files between an iPhone and a Windows PC, over plain Wi-Fi.</p>
             <p class="seen"><b>On screen</b> The Windfall apple drops into place above the name.</p>
           </div></li>
           <li><time datetime="PT6S">0:06</time><div>
             <p class="eb">01 · The problem</p>
             <h3 class="hd">AirDrop needs a radio mode Windows can't drive.</h3>
             <p class="said">An iPhone only AirDrops over AWDL, Apple's second Wi-Fi link layer. Windows exposes no way to run it.</p>
+            <p class="voice"><b>Voice</b> AirDrop needs Apple's own radio link, AWDL, and Windows can't run it.</p>
             <p class="seen"><b>On screen</b> A Windows PC, STUDIO-PC, shows Windfall with a Your phone button in its header, reading Ready: "iPhones only appear here over AWDL. For one on this Wi-Fi, use the phone button above." Beside it, an iPhone on its lock screen. A dashed red line between them, marked AirDrop · AWDL, is crossed out, and the phone's beacons stop at the cross.</p>
           </div></li>
           <li><time datetime="PT11.5S">0:11</time><div>
             <p class="eb">01 · The way round</p>
             <h3 class="hd">So use the Wi-Fi both devices already share.</h3>
             <p class="said">Windfall serves a small web page on the local network. It is not AirDrop, and it needs no Linux, no app on the phone and no extra hardware.</p>
+            <p class="voice"><b>Voice</b> So the phone page uses the Wi-Fi both devices already share.</p>
             <p class="seen"><b>On screen</b> A solid green line marked same Wi-Fi takes its place. On the PC, the pointer clicks Your phone.</p>
           </div></li>
           <li><time datetime="PT16S">0:16</time><div>
             <p class="eb">02 · Scan</p>
             <h3 class="hd">The PC shows a code. The iPhone's camera reads it.</h3>
             <p class="said">The code holds the PC's address and a secret token: 128 random bits, new every run. Safari opens the page. Any request without the token gets a 404.</p>
+            <p class="voice"><b>Voice</b> On the PC, Your phone shows a QR code, and the iPhone's camera reads it. It holds the PC's address and a secret token, new every run. Safari opens the page.</p>
             <p class="seen"><b>On screen</b> The PC shows a QR code, the address <code>http://192.168.1.20:52814/</code> with the token after it, and a New link button, under "Scan with the Camera on a phone on this Wi-Fi, then send files both ways in its browser. No app needed." The phone's camera frames the code and offers to open "192.168.1.20" in Safari. A request with the token crosses to the PC, the page comes back, and Safari shows STUDIO-PC: "Send files both ways over this Wi-Fi. No app needed."</p>
           </div></li>
           <li><time datetime="PT27.5S">0:27</time><div>
             <p class="eb">03 · Send, in order</p>
             <h3 class="hd">The phone sends the list first, then the files.</h3>
             <p class="said">One <code>POST /&lt;token&gt;/upload</code>. The form fields arrive in a fixed order, and the order is the point.</p>
+            <p class="voice"><b>Voice</b> Pick five photos and tap Send. The upload is one request, and its order is the point: first the device, then the list of files, then the files.</p>
             <p class="seen"><b>On screen</b> On the phone, five photos are chosen, IMG_4101.jpeg to IMG_4105.jpeg, and Send 5 files is tapped. The phone reads "Waiting for STUDIO-PC to accept…". Then the three fields, in order. 1, <code>from</code>: a guess at the device, "iPhone", from the browser, for display only. 2, <code>manifest</code>: a JSON list of {name, size} for every file it is about to send. No list, no question: an upload without one is refused. 3, <code>file</code> × n: the files themselves. The PC reads the first one's headers, then stops and asks.</p>
           </div></li>
           <li><time datetime="PT38.4S">0:38</time><div>
             <p class="eb">04 · Ask before reading</p>
             <h3 class="hd">The PC asks before it reads a single byte of a file.</h3>
             <p class="said">The list is what the person sees. Until they answer, the upload waits in the socket and TCP holds the phone back, so nobody can push a file onto the PC unasked.</p>
+            <p class="voice"><b>Voice</b> The PC reads the list, then stops and asks, before it reads a single byte of the files. The phone has to wait.</p>
             <p class="seen"><b>On screen</b> <code>from</code>, <code>manifest</code> and the first file's headers cross to the PC. It asks: "iPhone wants to send 5 files. 3.6 MB together. Nothing is saved unless you accept," and lists the five: IMG_4101.jpeg, 2.5 MB; IMG_4102.jpeg, 412 KB; IMG_4103.jpeg, 388 KB; IMG_4104.jpeg, 201 KB; IMG_4105.jpeg, 96 KB. The rest of the upload is marked held by TCP. The pointer clicks Accept.</p>
           </div></li>
           <li><time datetime="PT46.3S">0:46</time><div>
             <p class="eb">04 · Accepted</p>
             <h3 class="hd">Accept, and the bytes flow at Wi-Fi speed.</h3>
             <p class="said">Files are staged, then committed all or nothing. Five photos, 3.6 MB together, arrived intact from a real iPhone.</p>
+            <p class="voice"><b>Voice</b> Accept, and the photos stream across at Wi-Fi speed. They're saved together, or not at all.</p>
             <p class="seen"><b>On screen</b> The PC reads "Receiving from iPhone…" and ticks off each file in <code>Downloads\Windfall</code>, then reads "Saved 5 files from iPhone". A 200 OK goes back, and the phone reads "Sent 5 files."</p>
           </div></li>
           <li><time datetime="PT54.4S">0:54</time><div>
             <p class="eb">05 · The list is binding</p>
             <h3 class="hd">What was agreed to is what lands on disk.</h3>
             <p class="said">Each file is saved under the name the list gave it and may be no larger than the list said. Any mismatch fails the whole upload.</p>
+            <p class="voice"><b>Voice</b> What you agree to is what gets saved. If a file doesn't match the list, by name, size or count, nothing is kept.</p>
             <p class="seen"><b>On screen</b> Agreed at the prompt: photo.jpg, 1.2 MB, 1 file. What the page sent: photo.exe, 40 MB, 2 files. A not-equal sign stands between them. Then four rules: name taken from the list; no larger than listed; count must match; a mismatch fails the whole upload, and nothing is kept.</p>
           </div></li>
           <li><time datetime="PT1M3.4S">1:03</time><div>
             <p class="eb">06 · Decline</p>
             <h3 class="hd">Say no, and the phone hears it.</h3>
             <p class="said">The refusal goes out while the phone is still uploading. Safari shows "Declined on" the PC's name, and nothing is left behind: no file, no staging folder.</p>
+            <p class="voice"><b>Voice</b> This time, one photo. Decline it, and the phone is told at once. Nothing is left behind on the PC.</p>
             <p class="seen"><b>On screen</b> The phone sends one file, IMG_4120.jpeg, 1.6 MB, and the PC asks about it. The pointer clicks Decline, a 403 Declined crosses back, and the phone reads "Declined on STUDIO-PC." The PC reads "The phone was told. Nothing was written: no file, no staging folder," and its staging folder, <code>Downloads\Windfall\.incoming-…</code>, is marked removed.</p>
           </div></li>
           <li><time datetime="PT1M11.9S">1:11</time><div>
             <p class="eb">07 · The other way</p>
             <h3 class="hd">The PC can offer files back to the phone.</h3>
             <p class="said">Only while the phone sheet is open. Each offer has a generation number, so an old link stops working the moment the offer changes. Downloads land in the Files app.</p>
+            <p class="voice"><b>Voice</b> Files can go the other way too. While the sheet is open, the PC offers files, and the phone saves them to its Files app. Links to an old offer stop working.</p>
             <p class="seen"><b>On screen</b> Under "Offered to the phone", the PC lists holiday-01.jpg, 3.1 MB; holiday-02.jpg, 2.8 MB; and clip.mp4, 24 MB, as offer #4, while its sheet is open. The phone page lists them under From STUDIO-PC, with the note "Downloads go to the Files app. To put a photo in Photos, open it there and tap Share, then Save Image." The phone downloads holiday-01.jpg with <code>GET /&lt;token&gt;/files/4/0</code>, and a banner reads "Download complete: holiday-01.jpg saved to Files". A request for the offer before, <code>GET /&lt;token&gt;/files/3/0</code>, gets a 404.</p>
           </div></li>
           <li><time datetime="PT1M22.4S">1:22</time><div>
             <p class="eb">08 · Security model</p>
             <h3 class="hd">Two locks, and plain HTTP on purpose.</h3>
             <p class="said">Safari shows a full-page warning for a self-signed certificate. Rather than teach people to click through it, the page relies on the token, the prompt and the Wi-Fi's own encryption.</p>
+            <p class="voice"><b>Voice</b> Two locks keep it safe: the secret token in the address, and the question on the PC. It's plain HTTP, so use it on a network you trust.</p>
             <p class="seen"><b>On screen</b> Lock 1, the token: 128 random bits as the first path segment, compared in constant time. A wrong or missing token gets the same 404 as a page that doesn't exist. Lock 2, the prompt: anyone with the link can ask to send files, but nothing is written until the person at the PC agrees, and New link takes the address back. Protected: from outsiders, by the Wi-Fi's encryption, and from others on the network without the link, by the token. Not protected: from someone on the same network who can intercept traffic. So: home and other trusted networks.</p>
           </div></li>
           <li><time datetime="PT1M33.4S">1:33</time><div>
             <p class="eb">09 · Verified</p>
             <h3 class="hd">Tested with a real iPhone on iOS 27.0.1.</h3>
             <p class="said">The Windfall app on plain Windows, over home Wi-Fi.</p>
+            <p class="voice"><b>Voice</b> All of this was tested with a real iPhone, on iOS 27. Not AirDrop. Just the Wi-Fi you already have.</p>
             <p class="seen"><b>On screen</b> Four results, each ticked. The camera read the code from the app; Safari opened the page. One photo, then five in one send, arrived intact (Safari converts HEIC to JPEG). A decline reached the phone as "Declined on", leaving nothing behind. Five images and a video downloaded from the PC to the phone. It ends on "Not AirDrop. Just the Wi-Fi you already have." and uvejsgj.github.io/windfall-site, then fades to the colour of the page.</p>
           </div></li>
         </ol>
