@@ -91,7 +91,7 @@
     // of sight, the film takes the focus, so that Space pauses it rather than starting the
     // step again where nobody can see.
     function go(i) {
-      if (video.error) video.load();   // an earlier load failed: try again
+      if (video.error) video.src = pick(worn);   // an earlier load failed: start again from the best file
       if (video.readyState) video.currentTime = at[i]; else cue = at[i];
       sync();
       var p = video.play();
